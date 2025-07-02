@@ -125,6 +125,10 @@ class GrafanaRunner:
             self.driver.set_page_load_timeout(timeout)
             self.driver.implicitly_wait(10)
 
+            # Ensure fullscreen mode is activated (especially important for macOS)
+            if self.config["browser_settings"].get("fullscreen", True):
+                self.ensure_fullscreen_mode()
+
             self.logger.info(f"Browser initialized: {browser_type}")
 
         except WebDriverException as e:
@@ -135,12 +139,16 @@ class GrafanaRunner:
         """Setup Chrome browser with kiosk mode options"""
         options = ChromeOptions()
 
-        # Kiosk mode options
+        # Kiosk mode options - enhanced for true fullscreen experience
         if self.config["browser_settings"].get("fullscreen", True):
             options.add_argument("--kiosk")
             options.add_argument("--start-fullscreen")
+            options.add_argument("--start-maximized")
+            # Force fullscreen on Windows
+            options.add_argument("--force-device-scale-factor=1")
+            options.add_argument("--disable-features=CalculateNativeWinOcclusion")
 
-        # Security and UI options
+        # Complete UI removal for kiosk mode
         options.add_argument("--no-first-run")
         options.add_argument("--no-default-browser-check")
         options.add_argument("--disable-default-apps")
@@ -151,11 +159,39 @@ class GrafanaRunner:
         options.add_argument("--disable-backgrounding-occluded-windows")
         options.add_argument("--disable-client-side-phishing-detection")
         options.add_argument("--disable-sync")
-        options.add_argument("--disable-features=TranslateUI")
+        options.add_argument(
+            "--disable-features=TranslateUI,OptimizationHints,MediaRouter"
+        )
         options.add_argument("--disable-ipc-flooding-protection")
 
-        # Remove bars and UI elements
+        # Remove all UI elements and controls
         options.add_argument("--hide-scrollbars")
+        options.add_argument("--disable-infobars")
+        options.add_argument("--disable-notifications")
+        options.add_argument("--disable-password-generation")
+        options.add_argument("--disable-save-password-bubble")
+        options.add_argument("--disable-session-crashed-bubble")
+        options.add_argument("--disable-component-extensions-with-background-pages")
+        options.add_argument("--disable-default-apps")
+        options.add_argument("--disable-prompt-on-repost")
+
+        # Additional kiosk mode enhancements
+        options.add_argument("--noerrdialogs")
+        options.add_argument("--disable-hang-monitor")
+        options.add_argument("--disable-logging")
+        options.add_argument("--disable-gpu-logging")
+        options.add_argument("--silent")
+        options.add_argument("--log-level=3")
+
+        # Media and autoplay settings for digital signage
+        options.add_argument("--autoplay-policy=no-user-gesture-required")
+        options.add_argument("--disable-features=PreloadMediaEngagementData")
+
+        # Performance and stability options
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-gpu-sandbox")
+        options.add_argument("--disable-software-rasterizer")
 
         # Security options
         if self.config["browser_settings"].get("disable_web_security", False):
@@ -178,10 +214,25 @@ class GrafanaRunner:
         if self.config["browser_settings"].get("incognito", True):
             options.add_argument("--incognito")
 
-        # Additional kiosk-specific options
+        # Additional kiosk-specific options to hide automation
         options.add_experimental_option("useAutomationExtension", False)
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option(
+            "excludeSwitches", ["enable-automation", "enable-logging"]
+        )
         options.add_argument("--disable-blink-features=AutomationControlled")
+
+        # Set preferences to disable various popups and notifications
+        prefs = {
+            "profile.default_content_setting_values": {
+                "notifications": 2,  # Block notifications
+                "media_stream": 2,  # Block camera/microphone
+                "geolocation": 2,  # Block location
+            },
+            "profile.default_content_settings.popups": 0,
+            "profile.managed_default_content_settings.popups": 0,
+            "profile.content_settings.exceptions.automatic_downloads.*.setting": 1,
+        }
+        options.add_experimental_option("prefs", prefs)
 
         return webdriver.Chrome(options=options)
 
@@ -189,17 +240,80 @@ class GrafanaRunner:
         """Setup Firefox browser with kiosk mode options"""
         options = FirefoxOptions()
 
+        # Kiosk mode options for Firefox
         if self.config["browser_settings"].get("fullscreen", True):
             options.add_argument("--kiosk")
+            options.add_argument("--width=1920")
+            options.add_argument("--height=1080")
 
         # Additional Firefox-specific options
-        (
+        if self.config["browser_settings"].get("incognito", True):
             options.add_argument("--private-window")
-            if self.config["browser_settings"].get("incognito", True)
-            else None
-        )
+
+        # Disable various Firefox UI elements and notifications
+        options.add_argument("--no-first-run")
+        options.add_argument("--disable-notifications")
+
+        # Set Firefox preferences for kiosk mode
+        options.set_preference("browser.fullscreen.autohide", True)
+        options.set_preference("dom.disable_open_during_load", False)
+        options.set_preference("dom.disable_window_open_feature.close", True)
+        options.set_preference("dom.disable_window_open_feature.location", True)
+        options.set_preference("dom.disable_window_open_feature.menubar", True)
+        options.set_preference("dom.disable_window_open_feature.resizable", True)
+        options.set_preference("dom.disable_window_open_feature.scrollbars", True)
+        options.set_preference("dom.disable_window_open_feature.status", True)
+        options.set_preference("dom.disable_window_open_feature.toolbar", True)
+        options.set_preference("browser.link.open_newwindow", 1)
+        options.set_preference("browser.link.open_newwindow.restriction", 0)
+
+        # Disable notifications and popups
+        options.set_preference("dom.webnotifications.enabled", False)
+        options.set_preference("dom.push.enabled", False)
+        options.set_preference("geo.enabled", False)
+        options.set_preference("media.navigator.enabled", False)
+
+        # Performance settings
+        options.set_preference("browser.cache.disk.enable", False)
+        options.set_preference("browser.cache.memory.enable", True)
+        options.set_preference("browser.sessionstore.max_tabs_undo", 0)
+        options.set_preference("browser.sessionstore.max_windows_undo", 0)
 
         return webdriver.Firefox(options=options)
+
+    def ensure_fullscreen_mode(self):
+        """Ensure the browser window is in fullscreen mode"""
+        try:
+            # Maximize the window first
+            self.driver.maximize_window()
+
+            # Try to enter fullscreen mode using JavaScript
+            # This helps especially on macOS where kiosk mode might not work as expected
+            self.driver.execute_script(
+                """
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    document.documentElement.msRequestFullscreen();
+                }
+            """
+            )
+
+            # Additional window positioning to ensure it covers the entire screen
+            self.driver.set_window_position(0, 0)
+
+            # Small delay to allow fullscreen transition
+            time.sleep(1)
+
+            self.logger.info("Fullscreen mode activated")
+
+        except Exception as e:
+            self.logger.warning(f"Could not ensure fullscreen mode: {e}")
+            # Continue execution even if fullscreen fails
 
     def navigate_to_panel(self, panel):
         """Navigate to a specific Grafana panel"""
@@ -217,10 +331,84 @@ class GrafanaRunner:
             # Additional wait for Grafana panels to render
             time.sleep(3)
 
+            # Apply kiosk mode enhancements after page load
+            self.apply_kiosk_enhancements()
+
         except TimeoutException:
             self.logger.warning(f"Timeout loading panel: {panel['url']}")
         except Exception as e:
             self.logger.error(f"Error loading panel {panel['url']}: {e}")
+
+    def apply_kiosk_enhancements(self):
+        """Apply additional kiosk mode enhancements via JavaScript"""
+        try:
+            # Hide cursor and apply kiosk-specific styling
+            self.driver.execute_script(
+                """
+                // Hide cursor for true kiosk experience
+                var style = document.createElement('style');
+                style.innerHTML = `
+                    * {
+                        cursor: none !important;
+                        -webkit-user-select: none !important;
+                        -moz-user-select: none !important;
+                        -ms-user-select: none !important;
+                        user-select: none !important;
+                    }
+
+                    /* Hide scrollbars */
+                    ::-webkit-scrollbar {
+                        display: none !important;
+                    }
+
+                    /* Ensure full screen usage */
+                    html, body {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        overflow: hidden !important;
+                        width: 100vw !important;
+                        height: 100vh !important;
+                    }
+
+                    /* Prevent text selection highlighting */
+                    ::selection {
+                        background: transparent !important;
+                    }
+                    ::-moz-selection {
+                        background: transparent !important;
+                    }
+                `;
+                document.head.appendChild(style);
+
+                // Disable right-click context menu
+                document.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    return false;
+                });
+
+                // Disable common keyboard shortcuts
+                document.addEventListener('keydown', function(e) {
+                    // Disable F11 (fullscreen toggle), F12 (dev tools), Ctrl+Shift+I, etc.
+                    if (e.key === 'F11' || e.key === 'F12' ||
+                        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                        (e.ctrlKey && e.shiftKey && e.key === 'J') ||
+                        (e.ctrlKey && e.key === 'u') ||
+                        (e.ctrlKey && e.key === 'U')) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+
+                // Remove any existing focus
+                if (document.activeElement) {
+                    document.activeElement.blur();
+                }
+            """
+            )
+
+        except Exception as e:
+            self.logger.warning(f"Could not apply kiosk enhancements: {e}")
+            # Continue execution even if enhancements fail
 
     def run(self):
         """Main execution loop"""

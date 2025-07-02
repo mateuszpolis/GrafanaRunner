@@ -243,3 +243,127 @@ class TestBrowserSetup:
 
         finally:
             os.unlink(config_path)
+
+    @patch("grafana_runner.webdriver.Chrome")
+    def test_fullscreen_mode_setup(self, mock_chrome):
+        """Test that kiosk mode arguments are properly set when fullscreen is enabled."""
+        config_data = {
+            "panels": [
+                {
+                    "name": "Test Panel",
+                    "url": "https://agrana.cern.ch/d/test?kiosk",
+                    "duration": 10,
+                }
+            ],
+            "browser_settings": {
+                "browser": "chrome",
+                "fullscreen": True,
+                "page_load_timeout": 30,
+            },
+        }
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+            json.dump(config_data, f)
+            config_path = f.name
+
+        try:
+            runner = GrafanaRunner(config_path)
+
+            mock_driver = Mock()
+            mock_chrome.return_value = mock_driver
+
+            # We need to mock the ChromeOptions to inspect the arguments
+            with patch("grafana_runner.ChromeOptions") as mock_options_class:
+                mock_options = Mock()
+                mock_options_class.return_value = mock_options
+                mock_options.arguments = []
+
+                # Mock the add_argument method to track calls
+                def add_argument_side_effect(arg):
+                    mock_options.arguments.append(arg)
+
+                mock_options.add_argument.side_effect = add_argument_side_effect
+
+                runner.setup_browser()
+
+                # Verify Chrome was called
+                mock_chrome.assert_called_once()
+
+                # Verify fullscreen setup arguments were added
+                expected_fullscreen_args = [
+                    "--kiosk",
+                    "--start-fullscreen",
+                    "--start-maximized",
+                    "--disable-infobars",
+                    "--no-first-run",
+                    "--force-device-scale-factor=1",
+                    "--disable-features=CalculateNativeWinOcclusion",
+                ]
+
+                for expected_arg in expected_fullscreen_args:
+                    assert (
+                        expected_arg in mock_options.arguments
+                    ), f"Expected fullscreen argument {expected_arg} not found in Chrome options"
+
+        finally:
+            os.unlink(config_path)
+
+    @patch("grafana_runner.webdriver.Chrome")
+    def test_fullscreen_mode_disabled(self, mock_chrome):
+        """Test that kiosk mode arguments are not set when fullscreen is disabled."""
+        config_data = {
+            "panels": [
+                {
+                    "name": "Test Panel",
+                    "url": "https://agrana.cern.ch/d/test?kiosk",
+                    "duration": 10,
+                }
+            ],
+            "browser_settings": {
+                "browser": "chrome",
+                "fullscreen": False,
+                "page_load_timeout": 30,
+            },
+        }
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+            json.dump(config_data, f)
+            config_path = f.name
+
+        try:
+            runner = GrafanaRunner(config_path)
+
+            mock_driver = Mock()
+            mock_chrome.return_value = mock_driver
+
+            # We need to mock the ChromeOptions to inspect the arguments
+            with patch("grafana_runner.ChromeOptions") as mock_options_class:
+                mock_options = Mock()
+                mock_options_class.return_value = mock_options
+                mock_options.arguments = []
+
+                # Mock the add_argument method to track calls
+                def add_argument_side_effect(arg):
+                    mock_options.arguments.append(arg)
+
+                mock_options.add_argument.side_effect = add_argument_side_effect
+
+                runner.setup_browser()
+
+                # Verify Chrome was called
+                mock_chrome.assert_called_once()
+
+                # Verify kiosk mode arguments were NOT added
+                kiosk_args = [
+                    "--kiosk",
+                    "--start-fullscreen",
+                    "--app-auto-launched",
+                ]
+
+                for kiosk_arg in kiosk_args:
+                    assert (
+                        kiosk_arg not in mock_options.arguments
+                    ), f"Kiosk argument {kiosk_arg} should not be present when fullscreen is disabled"
+
+        finally:
+            os.unlink(config_path)
