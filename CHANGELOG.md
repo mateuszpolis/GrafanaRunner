@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.4.1...v1.4.2) (2025-07-02)
+
+
+### ♻️ Code Refactoring
+
+* improve error messaging and clarity in Windows installer ([463df36](https://github.com/mateuszpolis/GrafanaRunner/commit/463df36b11d5dd91358f72fb54296c51815c9e0b))
+
 ## [1.4.1](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.4.0...v1.4.1) (2025-07-02)
 
 
