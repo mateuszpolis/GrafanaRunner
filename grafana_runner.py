@@ -125,9 +125,12 @@ class GrafanaRunner:
             self.driver.set_page_load_timeout(timeout)
             self.driver.implicitly_wait(10)
 
-            # Ensure fullscreen mode is activated (especially important for macOS)
             if self.config["browser_settings"].get("fullscreen", True):
-                self.ensure_fullscreen_mode()
+                # first, push the window into OS fullscreen
+                self.driver.fullscreen_window()
+                # give the OS a moment
+                time.sleep(1)
+                self.logger.info("Entered OS-level fullscreen")
 
             self.logger.info(f"Browser initialized: {browser_type}")
 
@@ -139,14 +142,19 @@ class GrafanaRunner:
         """Setup Chrome browser with kiosk mode options"""
         options = ChromeOptions()
 
-        # Kiosk mode options - enhanced for true fullscreen experience
-        if self.config["browser_settings"].get("fullscreen", True):
-            options.add_argument("--kiosk")
-            options.add_argument("--start-fullscreen")
-            options.add_argument("--start-maximized")
-            # Force fullscreen on Windows
-            options.add_argument("--force-device-scale-factor=1")
-            options.add_argument("--disable-features=CalculateNativeWinOcclusion")
+        # True kiosk: strip out browser chrome, then OS fullscreen
+        fullscreen = self.config["browser_settings"].get("fullscreen", True)
+        if fullscreen:
+            # use "app" mode to remove address bar etc.
+            first_panel = self.config["panels"][0]["url"]
+            options.add_argument(f"--app={first_panel}")
+            # add the right flag per OS
+            import sys
+
+            if sys.platform.startswith("linux"):
+                options.add_argument("--kiosk")
+            else:
+                options.add_argument("--start-fullscreen")
 
         # Complete UI removal for kiosk mode
         options.add_argument("--no-first-run")
@@ -284,30 +292,31 @@ class GrafanaRunner:
     def ensure_fullscreen_mode(self):
         """Ensure the browser window is in fullscreen mode"""
         try:
-            # Maximize the window first
-            self.driver.maximize_window()
+            # Only try fullscreen if not already in app mode
+            if not self.config["browser_settings"].get("fullscreen", True):
+                # Maximize first
+                self.driver.maximize_window()
 
-            # Try to enter fullscreen mode using JavaScript
-            # This helps especially on macOS where kiosk mode might not work as expected
-            self.driver.execute_script(
-                """
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen();
-                } else if (document.documentElement.webkitRequestFullscreen) {
-                    document.documentElement.webkitRequestFullscreen();
-                } else if (document.documentElement.mozRequestFullScreen) {
-                    document.documentElement.mozRequestFullScreen();
-                } else if (document.documentElement.msRequestFullscreen) {
-                    document.documentElement.msRequestFullscreen();
-                }
-            """
-            )
+                # Try fullscreen API
+                self.driver.execute_script(
+                    """
+                    if (document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen();
+                    } else if (document.documentElement.webkitRequestFullscreen) {
+                        document.documentElement.webkitRequestFullscreen();
+                    } else if (document.documentElement.mozRequestFullScreen) {
+                        document.documentElement.mozRequestFullScreen();
+                    } else if (document.documentElement.msRequestFullscreen) {
+                        document.documentElement.msRequestFullscreen();
+                    }
+                    """
+                )
 
-            # Additional window positioning to ensure it covers the entire screen
-            self.driver.set_window_position(0, 0)
+                # Position window
+                self.driver.set_window_position(0, 0)
 
-            # Small delay to allow fullscreen transition
-            time.sleep(1)
+                # Allow transition
+                time.sleep(1)
 
             self.logger.info("Fullscreen mode activated")
 
@@ -332,7 +341,7 @@ class GrafanaRunner:
             time.sleep(3)
 
             # Apply kiosk mode enhancements after page load
-            self.apply_kiosk_enhancements()
+            # self.apply_kiosk_enhancements()
 
         except TimeoutException:
             self.logger.warning(f"Timeout loading panel: {panel['url']}")
