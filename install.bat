@@ -48,19 +48,19 @@ if errorlevel 1 (
 )
 
 :: ── Check if Chrome is installed ───────────────────────────────────────────────
-set CHROME_PATH=
-if exist "C:\Program Files\Google\Chrome\Application\chrome.exe" (
-    set CHROME_PATH=C:\Program Files\Google\Chrome\Application\chrome.exe
-) else if exist "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" (
-    set CHROME_PATH=C:\Program Files (x86)\Google\Chrome\Application\chrome.exe
+set "CHROME_PATH="
+if exist "%ProgramFiles%\Google\Chrome\Application\chrome.exe" (
+    set "CHROME_PATH=%ProgramFiles%\Google\Chrome\Application\chrome.exe"
 ) else (
-    echo ⚠️  Google Chrome not found in standard locations.
-    echo Please install Chrome for best compatibility: https://www.google.com/chrome/
-    echo Alternative: You can use Firefox by changing 'browser' to 'firefox' in config.json
-    echo.
+    if exist "%ProgramFiles(x86)%\Google\Chrome\Application\chrome.exe" (
+        set "CHROME_PATH=%ProgramFiles(x86)%\Google\Chrome\Application\chrome.exe"
+    ) else (
+        echo ⚠️  Google Chrome not found in standard locations.
+        echo Please install Chrome for best compatibility: https://www.google.com/chrome/
+        echo Alternative: You can use Firefox by changing 'browser' to 'firefox' in config.json
+        echo.
+    )
 )
-
-:: ChromeDriver will be managed automatically
 echo 🔧 ChromeDriver will be automatically managed by webdriver-manager
 
 :: ── Get current directory for task creation ───────────────────────────────────
@@ -69,21 +69,19 @@ set "CURRENT_DIR=%CURRENT_DIR:~0,-1%"
 
 :: ── Create Windows startup task ───────────────────────────────────────────────
 echo 🔧 Creating Windows startup task...
-
-:: Use schtasks directly (no XML) to avoid encoding issues
 schtasks /create ^
     /tn "GrafanaRunner" ^
-    /tr "\"%PYTHON_EXE:python=python%\" \"%CURRENT_DIR%\grafana_runner.py\"" ^
+    /tr "python \"%CURRENT_DIR%\grafana_runner.py\"" ^
     /sc onlogon ^
     /rl leastprivileged ^
     /f
 if errorlevel 1 (
     echo ⚠️  Could not create startup task automatically.
-    echo You can manually add the task using Task Scheduler:
-    echo    Action: Start a program
-    echo    Program/script: python
-    echo    Arguments: "%CURRENT_DIR%\grafana_runner.py"
-    echo    Trigger: At log on
+    echo You can manually add the task in Task Scheduler:
+    echo    • Trigger: At log on
+    echo    • Action: Start a program
+    echo      Program/script: python
+    echo      Arguments: "%CURRENT_DIR%\grafana_runner.py"
 ) else (
     echo ✅ Created Windows startup task: GrafanaRunner
 )
@@ -92,11 +90,11 @@ echo.
 echo ✅ Installation complete!
 echo.
 echo 📋 Next Steps:
-echo  1. Edit config.json with your Grafana panel URLs
-echo  2. Test the runner: python grafana_runner.py    Or: run.bat
-echo  3. The startup task will run on your next logon
-echo  4. To disable startup: schtasks /delete /tn "GrafanaRunner" /f
-echo  5. To re-enable:      schtasks /change /tn "GrafanaRunner" /enable
+echo   1. Edit config.json with your Grafana panel URLs
+echo   2. Test the runner: python grafana_runner.py   Or: run.bat
+echo   3. The startup task will run on your next logon
+echo   4. To disable startup: schtasks /delete /tn "GrafanaRunner" /f
+echo   5. To re-enable:      schtasks /change /tn "GrafanaRunner" /enable
 echo.
 echo 📖 For more information, see README.md
 echo.
