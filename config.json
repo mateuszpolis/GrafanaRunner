@@ -1,0 +1,29 @@
+{
+  "panels": [
+    {
+      "name": "System Overview Dashboard",
+      "url": "http://localhost:3000/d/system-overview?orgId=1&refresh=5s&kiosk",
+      "duration": 15
+    },
+    {
+      "name": "Network Monitoring",
+      "url": "http://localhost:3000/d/network-monitoring?orgId=1&refresh=5s&kiosk",
+      "duration": 20
+    },
+    {
+      "name": "Application Metrics",
+      "url": "http://localhost:3000/d/app-metrics?orgId=1&refresh=5s&kiosk",
+      "duration": 10
+    }
+  ],
+  "browser_settings": {
+    "browser": "chrome",
+    "fullscreen": true,
+    "disable_extensions": true,
+    "disable_web_security": false,
+    "incognito": true,
+    "page_load_timeout": 30
+  },
+  "log_level": "INFO",
+  "refresh_browser_after_cycles": 10
+} 
