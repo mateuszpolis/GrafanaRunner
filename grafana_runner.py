@@ -94,6 +94,7 @@ class GrafanaRunner:
                 "fullscreen": True,
                 "disable_extensions": True,
                 "disable_web_security": False,
+                "ignore_ssl_errors": True,
                 "incognito": True,
                 "page_load_timeout": 30,
             },
@@ -155,11 +156,21 @@ class GrafanaRunner:
 
         # Remove bars and UI elements
         options.add_argument("--hide-scrollbars")
-        (
+
+        # Security options
+        if self.config["browser_settings"].get("disable_web_security", False):
             options.add_argument("--disable-web-security")
-            if self.config["browser_settings"].get("disable_web_security", False)
-            else None
-        )
+
+        # SSL/Certificate bypass options (for internal/self-signed certificates)
+        if self.config["browser_settings"].get("ignore_ssl_errors", True):
+            options.add_argument("--ignore-certificate-errors")
+            options.add_argument("--ignore-ssl-errors")
+            options.add_argument("--ignore-certificate-errors-spki-list")
+            options.add_argument("--allow-running-insecure-content")
+            options.add_argument("--disable-web-security")
+            options.add_argument("--allow-insecure-localhost")
+            options.add_argument("--disable-features=VizDisplayCompositor")
+            options.add_argument("--test-type")
 
         if self.config["browser_settings"].get("disable_extensions", True):
             options.add_argument("--disable-extensions")

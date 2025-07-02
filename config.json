@@ -71,6 +71,7 @@
     "fullscreen": true,
     "disable_extensions": true,
     "disable_web_security": false,
+    "ignore_ssl_errors": true,
     "incognito": true,
     "page_load_timeout": 30
   },
