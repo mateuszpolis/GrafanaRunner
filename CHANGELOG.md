@@ -1,3 +1,10 @@
+## [1.1.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.0.0...v1.1.0) (2025-07-02)
+
+
+### ✨ Features
+
+* add SSL error handling and configuration validation tests ([6cea6e6](https://github.com/mateuszpolis/GrafanaRunner/commit/6cea6e65e08aa440d33cea20efcb6062bd01ef08))
+
 ## 1.0.0 (2025-07-02)
 
 
