@@ -1,3 +1,10 @@
+## [1.3.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.2.0...v1.3.0) (2025-07-02)
+
+
+### ✨ Features
+
+* improve fullscreen and kiosk mode handling in GrafanaRunner ([03a0faa](https://github.com/mateuszpolis/GrafanaRunner/commit/03a0faaaa0da0c4015cc457dc5526108fccd555c))
+
 ## [1.2.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.1.0...v1.2.0) (2025-07-02)
 
 
