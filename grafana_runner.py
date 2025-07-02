@@ -155,9 +155,11 @@ class GrafanaRunner:
 
         # Remove bars and UI elements
         options.add_argument("--hide-scrollbars")
-        options.add_argument("--disable-web-security") if self.config[
-            "browser_settings"
-        ].get("disable_web_security", False) else None
+        (
+            options.add_argument("--disable-web-security")
+            if self.config["browser_settings"].get("disable_web_security", False)
+            else None
+        )
 
         if self.config["browser_settings"].get("disable_extensions", True):
             options.add_argument("--disable-extensions")
@@ -180,9 +182,11 @@ class GrafanaRunner:
             options.add_argument("--kiosk")
 
         # Additional Firefox-specific options
-        options.add_argument("--private-window") if self.config["browser_settings"].get(
-            "incognito", True
-        ) else None
+        (
+            options.add_argument("--private-window")
+            if self.config["browser_settings"].get("incognito", True)
+            else None
+        )
 
         return webdriver.Firefox(options=options)
 
