@@ -1,2 +1,11 @@
 selenium>=4.15.0
-webdriver-manager>=4.0.0 
+webdriver-manager>=4.0.0
+
+# Development dependencies (also available via pip install -e ".[dev]")
+# Uncomment for standalone development setup
+# black>=23.0.0
+# flake8>=6.0.0
+# isort>=5.12.0
+# pre-commit>=3.0.0
+# pytest>=7.0.0
+# pytest-cov>=4.0.0

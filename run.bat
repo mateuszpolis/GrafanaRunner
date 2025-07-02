@@ -11,4 +11,4 @@ if errorlevel 1 (
     echo ❌ Grafana Runner encountered an error.
     echo Check the logs: grafana_runner.log
     pause
-) 
+)

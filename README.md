@@ -49,7 +49,7 @@ Edit `config.json` with your Grafana panel URLs:
       "duration": 15
     },
     {
-      "name": "Dashboard 2", 
+      "name": "Dashboard 2",
       "url": "http://your-grafana:3000/d/another-dashboard?orgId=1&refresh=5s&kiosk",
       "duration": 20
     }
@@ -247,4 +247,4 @@ GrafanaRunner/
 
 ## License
 
-This project is open source. Feel free to modify and distribute according to your needs. 
+This project is open source. Feel free to modify and distribute according to your needs.

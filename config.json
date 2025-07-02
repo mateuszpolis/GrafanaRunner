@@ -1,14 +1,69 @@
 {
   "panels": [
     {
-      "name": "System Overview Dashboard",
-      "url": "http://localhost:3000/d/system-overview?orgId=1&refresh=5s&kiosk",
+      "name": "Common UI",
+      "url": "https://agrana.cern.ch/d/aehs6pw2f0hkwf/common-ui?orgId=1&from=2025-04-03T16:55:39.134Z&to=2025-04-03T17:10:37.655Z&timezone=Europe%2FZurich&var-schema=FV0ARCH",
       "duration": 15
     },
     {
-      "name": "Network Monitoring",
-      "url": "http://localhost:3000/d/network-monitoring?orgId=1&refresh=5s&kiosk",
-      "duration": 20
+      "name": "Time Align",
+      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=TIME_ALIGN&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
+      "duration": 5
+    },
+    {
+      "name": "includedInTrg",
+      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=includedInTrg&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
+      "duration": 5
+    },
+    {
+      "name": "isOn",
+      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=isOn&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
+      "duration": 5
+    },
+    {
+      "name": "ADC0_RANGE",
+      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=ADC0_RANGE&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
+      "duration": 5
+    },
+    {
+      "name": "ADC1_RANGE",
+      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=ADC1_RANGE&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
+      "duration": 5
+    },
+    {
+      "name": "THRESHOLD_CALIBR",
+      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=THRESHOLD_CALIBR&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
+      "duration": 5
+    },
+    {
+      "name": "CFD_ZERO",
+      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=CFD_ZERO&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
+      "duration": 5
+    },
+    {
+      "name": "ADC_ZERO",
+      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=ADC_ZERO&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
+      "duration": 5
+    },
+    {
+      "name": "ADC_DELAY",
+      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=ADC_DELAY&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
+      "duration": 5
+    },
+    {
+      "name": "CFD_THRESHOLD",
+      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=CFD_THRESHOLD&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
+      "duration": 5
+    },
+    {
+      "name": "TRG_RATE",
+      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=TRG_RATE&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
+      "duration": 5
+    },
+    {
+      "name": "CFD_RATE",
+      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=CFD_RATE&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
+      "duration": 5
     },
     {
       "name": "Application Metrics",
@@ -26,4 +81,4 @@
   },
   "log_level": "INFO",
   "refresh_browser_after_cycles": 10
-} 
+}

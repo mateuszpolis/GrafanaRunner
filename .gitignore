@@ -109,4 +109,29 @@ debug_*.html
 .env.local
 .env.development
 .env.test
-.env.production 
+.env.production
+
+# CI/CD artifacts
+bandit-report.json
+trivy-results.sarif
+*.spec
+build/
+dist/
+
+# Semantic release
+CHANGELOG.md
+.releaserc
+node_modules/
+package-lock.json
+package.json
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+
+# Pre-commit cache
+.pre-commit-config.yaml.bak
+
+# Flake8 cache
+.flake8.cache

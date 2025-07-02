@@ -133,4 +133,4 @@ echo 5. To enable startup again: schtasks /change /tn "GrafanaRunner" /enable
 echo.
 echo 📖 For more information, see README.md
 echo.
-pause 
+pause
