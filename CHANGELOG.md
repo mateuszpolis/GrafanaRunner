@@ -1,3 +1,10 @@
+## [1.4.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.3.0...v1.4.0) (2025-07-02)
+
+
+### ✨ Features
+
+* enhance Windows installer with administrator check and improved task creation ([5b93658](https://github.com/mateuszpolis/GrafanaRunner/commit/5b93658036a6f339f4fdf740d9d458aec4f37643))
+
 ## [1.3.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.2.0...v1.3.0) (2025-07-02)
 
 
