@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.4.0...v1.4.1) (2025-07-02)
+
+
+### 🐛 Bug Fixes
+
+* improve Chrome detection and task creation in Windows installer ([f8942fa](https://github.com/mateuszpolis/GrafanaRunner/commit/f8942fa3a747ad6a8ecd0dcb397e8f114570be50))
+
 ## [1.4.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.3.0...v1.4.0) (2025-07-02)
 
 
