@@ -93,30 +93,29 @@ class TestFullscreenMode:
 
                 runner.setup_browser()
 
-                # Verify enhanced fullscreen arguments are present
-                expected_fullscreen_args = [
-                    "--kiosk",
-                    "--start-fullscreen",
-                    "--start-maximized",
-                    "--force-device-scale-factor=1",
-                    "--disable-features=CalculateNativeWinOcclusion",
-                    "--disable-infobars",
-                    "--disable-notifications",
-                    "--disable-password-generation",
-                    "--disable-save-password-bubble",
-                    "--disable-session-crashed-bubble",
-                    "--noerrdialogs",
-                    "--disable-hang-monitor",
-                    "--autoplay-policy=no-user-gesture-required",
-                    "--disable-dev-shm-usage",
-                    "--no-sandbox",
-                    "--disable-gpu-sandbox",
-                ]
+                # Verify new simplified fullscreen arguments are present
+                # The new implementation uses --app mode with first panel URL
+                assert any(
+                    arg.startswith("--app=") for arg in mock_options.arguments
+                ), "Expected --app flag for app mode"
 
-                for expected_arg in expected_fullscreen_args:
-                    assert (
-                        expected_arg in mock_options.arguments
-                    ), f"Expected enhanced fullscreen argument {expected_arg} not found in Chrome options"
+                # Should have either --kiosk (Linux) or --start-fullscreen (other platforms)
+                has_fullscreen_flag = any(
+                    arg in ["--kiosk", "--start-fullscreen"]
+                    for arg in mock_options.arguments
+                )
+                assert (
+                    has_fullscreen_flag
+                ), "Expected either --kiosk or --start-fullscreen flag"
+
+                # Check that the app URL contains the first panel URL
+                app_args = [
+                    arg for arg in mock_options.arguments if arg.startswith("--app=")
+                ]
+                assert len(app_args) == 1, "Expected exactly one --app argument"
+                assert (
+                    "http://localhost:3000/d/test?kiosk" in app_args[0]
+                ), "App URL should contain the first panel URL"
 
         finally:
             os.unlink(config_path)
@@ -279,19 +278,13 @@ class TestFullscreenMode:
             # Test the ensure_fullscreen_mode method directly
             runner.ensure_fullscreen_mode()
 
-            # Verify driver methods were called
-            mock_driver.maximize_window.assert_called_once()
-            mock_driver.set_window_position.assert_called_once_with(0, 0)
+            # In the new implementation, ensure_fullscreen_mode only acts when fullscreen is disabled
+            # Since fullscreen is enabled in config, it should not call maximize_window
+            mock_driver.maximize_window.assert_not_called()
 
-            # Verify JavaScript was executed for fullscreen
-            mock_driver.execute_script.assert_called_once()
-            js_call = mock_driver.execute_script.call_args[0][0]
-
-            # Check that the JavaScript contains fullscreen API calls
-            assert "requestFullscreen" in js_call
-            assert "webkitRequestFullscreen" in js_call
-            assert "mozRequestFullScreen" in js_call
-            assert "msRequestFullscreen" in js_call
+            # Should not execute any JavaScript or set window position when in app mode
+            mock_driver.execute_script.assert_not_called()
+            mock_driver.set_window_position.assert_not_called()
 
         finally:
             os.unlink(config_path)
@@ -309,7 +302,7 @@ class TestFullscreenMode:
             ],
             "browser_settings": {
                 "browser": "chrome",
-                "fullscreen": True,
+                "fullscreen": False,  # Disabled to test exception handling path
             },
         }
 
@@ -470,9 +463,9 @@ class TestFullscreenMode:
             # Verify WebDriverWait was used
             mock_wait.assert_called_once_with(mock_driver, 10)
 
-            # Verify kiosk enhancements were applied (execute_script should be called)
-            # The apply_kiosk_enhancements method calls execute_script
-            assert mock_driver.execute_script.call_count >= 1
+            # In the new implementation, apply_kiosk_enhancements is commented out
+            # So execute_script should not be called during navigation
+            mock_driver.execute_script.assert_not_called()
 
         finally:
             os.unlink(config_path)
@@ -512,9 +505,8 @@ class TestFullscreenMode:
             mock_driver.set_page_load_timeout.assert_called_with(30)
             mock_driver.implicitly_wait.assert_called_with(10)
 
-            # Verify fullscreen mode was ensured (maximize_window should be called)
-            mock_driver.maximize_window.assert_called_once()
-            mock_driver.set_window_position.assert_called_once_with(0, 0)
+            # Verify fullscreen mode was activated using OS-level fullscreen
+            mock_driver.fullscreen_window.assert_called_once()
 
         finally:
             os.unlink(config_path)
@@ -550,9 +542,8 @@ class TestFullscreenMode:
             # Test browser setup with fullscreen disabled
             runner.setup_browser()
 
-            # Verify fullscreen enhancements were NOT called
-            mock_driver.maximize_window.assert_not_called()
-            mock_driver.set_window_position.assert_not_called()
+            # Verify fullscreen mode was NOT activated
+            mock_driver.fullscreen_window.assert_not_called()
 
         finally:
             os.unlink(config_path)

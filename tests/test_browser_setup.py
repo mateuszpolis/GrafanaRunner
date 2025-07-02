@@ -290,20 +290,19 @@ class TestBrowserSetup:
                 mock_chrome.assert_called_once()
 
                 # Verify fullscreen setup arguments were added
-                expected_fullscreen_args = [
-                    "--kiosk",
-                    "--start-fullscreen",
-                    "--start-maximized",
-                    "--disable-infobars",
-                    "--no-first-run",
-                    "--force-device-scale-factor=1",
-                    "--disable-features=CalculateNativeWinOcclusion",
-                ]
+                # The new implementation uses --app mode and platform-specific flags
+                assert any(
+                    arg.startswith("--app=") for arg in mock_options.arguments
+                ), "Expected --app flag for app mode"
 
-                for expected_arg in expected_fullscreen_args:
-                    assert (
-                        expected_arg in mock_options.arguments
-                    ), f"Expected fullscreen argument {expected_arg} not found in Chrome options"
+                # Should have either --kiosk (Linux) or --start-fullscreen (other platforms)
+                has_fullscreen_flag = any(
+                    arg in ["--kiosk", "--start-fullscreen"]
+                    for arg in mock_options.arguments
+                )
+                assert (
+                    has_fullscreen_flag
+                ), "Expected either --kiosk or --start-fullscreen flag"
 
         finally:
             os.unlink(config_path)

@@ -73,6 +73,18 @@ repos:
           - --remove-duplicate-keys
           - --ignore-init-module-imports
 
+  # Run tests to ensure code quality
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: pytest
+        language: system
+        types: [python]
+        args: [--tb=short, -v]
+        pass_filenames: false
+        always_run: true
+
 ci:
   autofix_commit_msg: |
     [pre-commit.ci] auto fixes from pre-commit.com hooks
