@@ -1,3 +1,10 @@
+## [1.7.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.6.0...v1.7.0) (2025-07-03)
+
+
+### ✨ Features
+
+* add new dashboard configurations to config.json ([043a089](https://github.com/mateuszpolis/GrafanaRunner/commit/043a0895959e84cc77e831e524d0bb71f7679698))
+
 ## [1.6.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.5.1...v1.6.0) (2025-07-03)
 
 
