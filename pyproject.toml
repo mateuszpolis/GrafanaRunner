@@ -7,7 +7,7 @@ name = "grafana-runner"
 version = "1.0.0"
 description = "A digital signage solution for rotating Grafana dashboard panels in full-screen kiosk mode"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 authors = [
     {name = "Grafana Runner Contributors"}
 ]
@@ -16,7 +16,6 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.7",
@@ -31,6 +30,13 @@ requires-python = ">=3.7"
 dependencies = [
     "selenium>=4.15.0",
     "webdriver-manager>=4.0.0",
+]
+py-modules = [
+    "auth_handler",
+    "browser_setup",
+    "config",
+    "grafana_runner",
+    "panel_navigator",
 ]
 
 [project.optional-dependencies]
