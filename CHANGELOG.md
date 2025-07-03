@@ -1,3 +1,10 @@
+## [1.6.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.5.1...v1.6.0) (2025-07-03)
+
+
+### ✨ Features
+
+* add CERN SSO authentication handler ([5123cb9](https://github.com/mateuszpolis/GrafanaRunner/commit/5123cb9d03ed56674175cee63ebffc44f43e01fd))
+
 ## [1.5.1](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.5.0...v1.5.1) (2025-07-03)
 
 
