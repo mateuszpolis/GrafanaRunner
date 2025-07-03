@@ -3,7 +3,32 @@
     {
       "name": "Common UI",
       "url": "https://agrana.cern.ch/d/aehs6pw2f0hkwf/common-ui?orgId=1&from=2025-04-03T16:55:39.134Z&to=2025-04-03T17:10:37.655Z&timezone=Europe%2FZurich&var-schema=FV0ARCH",
-      "duration": 150
+      "duration": 10
+    },
+    {
+      "name": "Fan Status & Thermal Warnings",
+      "url": "https://agrana.cern.ch/d/fans-dashboard/fan-status-and-thermal-warnings?orgId=1&from=now-5m&to=now&timezone=Europe%2FZurich&var-schema=FV0ARCH&refresh=30s",
+      "duration": 10
+    },
+    {
+      "name": "fitControlServer Status",
+      "url": "https://agrana.cern.ch/d/fitcontrol-status/fitcontrolserver-status?orgId=1&from=now-1h&to=now&timezone=Europe%2FZurich&var-schema=FV0ARCH&refresh=1m",
+      "duration": 10
+    },
+    {
+      "name": "System Monitoring & Power",
+      "url": "https://agrana.cern.ch/d/sys-dashboard/system-monitoring-and-power?orgId=1&from=now-1h&to=now&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-module=PMA0&refresh=1m",
+      "duration": 10
+    },
+    {
+      "name": "TCM_FRED Parameters",
+      "url": "https://agrana.cern.ch/d/tcm-dashboard/tcm-fred-parameters?orgId=1&from=now-1h&to=now&timezone=Europe%2FZurich&var-pm=TCM&var-param=&refresh=1m",
+      "duration": 10
+    },
+    {
+      "name": "Triggers",
+      "url": "https://agrana.cern.ch/d/behs4t0raojr4b/triggers?orgId=1&from=now-3h&to=now&timezone=Europe%2FZurich&var-schema=FV0ARCH",
+      "duration": 10
     },
     {
       "name": "Time Align",
