@@ -19,10 +19,13 @@ class PanelNavigator:
     def navigate_to_panel(self, driver, panel, auth_handler=None):
         """Navigate to a specific Grafana panel."""
         try:
+            # Prepare URL with optional kiosk mode
+            panel_url = self._prepare_panel_url(panel["url"])
+
             self.logger.info(
-                f"Loading panel: {panel.get('name', 'Unnamed')} - {panel['url']}"
+                f"Loading panel: {panel.get('name', 'Unnamed')} - {panel_url}"
             )
-            driver.get(panel["url"])
+            driver.get(panel_url)
 
             # Wait for page to load
             WebDriverWait(driver, 10).until(
@@ -47,11 +50,31 @@ class PanelNavigator:
             return True
 
         except TimeoutException:
-            self.logger.warning(f"Timeout loading panel: {panel['url']}")
+            self.logger.warning(f"Timeout loading panel: {panel_url}")
             return False
         except Exception as e:
-            self.logger.error(f"Error loading panel {panel['url']}: {e}")
+            self.logger.error(f"Error loading panel {panel_url}: {e}")
             return False
+
+    def _prepare_panel_url(self, url):
+        """Prepare panel URL with optional Grafana kiosk mode parameter."""
+        # Check if Grafana kiosk mode is enabled in config
+        if self.config.get(
+            "grafana_kiosk_mode", True
+        ):  # Default to True for backward compatibility
+            # Check if kiosk parameter is already present
+            if "&kiosk" not in url and "?kiosk" not in url:
+                # Handle URL fragments properly
+                if "#" in url:
+                    base_url, fragment = url.split("#", 1)
+                    separator = "&" if "?" in base_url else "?"
+                    url = f"{base_url}{separator}kiosk#{fragment}"
+                else:
+                    separator = "&" if "?" in url else "?"
+                    url = f"{url}{separator}kiosk"
+                self.logger.debug(f"Added kiosk parameter to URL: {url}")
+
+        return url
 
     def apply_kiosk_enhancements(self, driver):
         """Apply additional kiosk mode enhancements via JavaScript."""

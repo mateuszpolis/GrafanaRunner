@@ -175,6 +175,7 @@ The application provides a true kiosk experience with:
 
 - **App Mode**: Chrome runs in app mode removing all browser UI
 - **OS Fullscreen**: Native fullscreen mode for true digital signage
+- **Grafana Native Kiosk**: Automatically enables Grafana's built-in kiosk mode
 - **Cursor Hiding**: JavaScript-based cursor removal for clean display
 - **Keyboard Blocking**: Disables F11, F12, Ctrl+Shift+I, and other shortcuts
 - **Right-click Blocking**: Prevents context menus
@@ -268,6 +269,55 @@ pip install pyotp python-dotenv
 ```
 
 These are automatically installed when using the provided installation scripts.
+
+## Grafana Native Kiosk Mode
+
+The application automatically enables Grafana's built-in kiosk mode by appending the `&kiosk` parameter to panel URLs, providing the cleanest possible display experience.
+
+### Automatic Kiosk Parameter
+
+The application automatically:
+
+1. **URL Modification**: Adds `&kiosk` parameter to panel URLs when enabled
+2. **Smart Detection**: Checks if kiosk parameter already exists to avoid duplication
+3. **Per-Panel Application**: Applies kiosk mode to each panel URL
+4. **Instant Activation**: No additional loading time or button clicking required
+5. **Configuration Controlled**: Easily enabled/disabled via `grafana_kiosk_mode` setting
+
+### Configuration
+
+Enable or disable Grafana kiosk mode in your `config.json`:
+
+```json
+{
+  "grafana_kiosk_mode": true,
+  "panels": [
+    {
+      "name": "Dashboard 1",
+      "url": "http://grafana.example.com/d/dashboard1?orgId=1&refresh=5s",
+      "duration": 15
+    }
+  ]
+}
+```
+
+When enabled, URLs are automatically modified:
+- `http://grafana.example.com/d/dashboard1?orgId=1` → `http://grafana.example.com/d/dashboard1?orgId=1&kiosk`
+- URLs already containing `&kiosk` or `?kiosk` remain unchanged
+
+### Benefits of Native Kiosk Mode
+
+- **Cleaner Interface**: Removes Grafana's top navigation and sidebar
+- **More Dashboard Space**: Maximizes area available for dashboard content
+- **Professional Appearance**: Provides a clean, distraction-free display
+- **Reliable Activation**: URL-based approach works across all Grafana versions
+- **Zero Latency**: No additional loading time or element detection required
+
+### Configuration Options
+
+- **`grafana_kiosk_mode: true`** - Enables automatic kiosk parameter addition (default)
+- **`grafana_kiosk_mode: false`** - Disables kiosk parameter addition
+- **Not specified** - Defaults to `true` for backward compatibility
 
 ## Grafana URL Tips
 

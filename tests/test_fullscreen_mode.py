@@ -448,10 +448,10 @@ class TestFullscreenMode:
             mock_chrome.return_value = mock_driver
             runner.driver = mock_driver
 
-            # Mock WebDriverWait to return immediately
+            # Mock WebDriverWait to return immediately for page load
             mock_wait_instance = Mock()
             mock_wait.return_value = mock_wait_instance
-            mock_wait_instance.until.return_value = True
+            mock_wait_instance.until.return_value = True  # Page load complete
 
             # Navigate to panel
             panel = config_data["panels"][0]
@@ -460,7 +460,7 @@ class TestFullscreenMode:
             # Verify driver methods were called
             mock_driver.get.assert_called_once_with(panel["url"])
 
-            # Verify WebDriverWait was used
+            # Verify WebDriverWait was used once for page load
             mock_wait.assert_called_once_with(mock_driver, 10)
 
             # In the new implementation, apply_kiosk_enhancements is commented out
@@ -544,6 +544,256 @@ class TestFullscreenMode:
 
             # Verify fullscreen mode was NOT activated
             mock_driver.fullscreen_window.assert_not_called()
+
+        finally:
+            os.unlink(config_path)
+
+    def test_grafana_kiosk_mode_url_preparation(self):
+        """Test URL preparation with Grafana kiosk mode enabled."""
+        config_data = {
+            "panels": [
+                {
+                    "name": "Test Panel",
+                    "url": "http://localhost:3000/d/test",
+                    "duration": 10,
+                }
+            ],
+            "browser_settings": {
+                "browser": "chrome",
+                "fullscreen": True,
+            },
+            "grafana_kiosk_mode": True,
+        }
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+            json.dump(config_data, f)
+            config_path = f.name
+
+        try:
+            runner = GrafanaRunner(config_path)
+
+            # Test URL without any parameters
+            url = "http://localhost:3000/d/test"
+            prepared_url = runner.panel_navigator._prepare_panel_url(url)
+            assert prepared_url == "http://localhost:3000/d/test?kiosk"
+
+            # Test URL with existing parameters
+            url = "http://localhost:3000/d/test?orgId=1"
+            prepared_url = runner.panel_navigator._prepare_panel_url(url)
+            assert prepared_url == "http://localhost:3000/d/test?orgId=1&kiosk"
+
+            # Test URL that already has kiosk parameter
+            url = "http://localhost:3000/d/test?kiosk"
+            prepared_url = runner.panel_navigator._prepare_panel_url(url)
+            assert prepared_url == "http://localhost:3000/d/test?kiosk"
+
+        finally:
+            os.unlink(config_path)
+
+    def test_grafana_kiosk_mode_disabled(self):
+        """Test URL preparation when Grafana kiosk mode is disabled."""
+        config_data = {
+            "panels": [
+                {
+                    "name": "Test Panel",
+                    "url": "http://localhost:3000/d/test",
+                    "duration": 10,
+                }
+            ],
+            "browser_settings": {
+                "browser": "chrome",
+                "fullscreen": True,
+            },
+            "grafana_kiosk_mode": False,
+        }
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+            json.dump(config_data, f)
+            config_path = f.name
+
+        try:
+            runner = GrafanaRunner(config_path)
+
+            # Test URL preparation when kiosk mode is disabled
+            url = "http://localhost:3000/d/test"
+            prepared_url = runner.panel_navigator._prepare_panel_url(url)
+            assert (
+                prepared_url == "http://localhost:3000/d/test"
+            )  # Should remain unchanged
+
+            # Test URL with existing parameters
+            url = "http://localhost:3000/d/test?orgId=1"
+            prepared_url = runner.panel_navigator._prepare_panel_url(url)
+            assert (
+                prepared_url == "http://localhost:3000/d/test?orgId=1"
+            )  # Should remain unchanged
+
+        finally:
+            os.unlink(config_path)
+
+    def test_grafana_kiosk_mode_default_behavior(self):
+        """Test default behavior when grafana_kiosk_mode is not specified."""
+        config_data = {
+            "panels": [
+                {
+                    "name": "Test Panel",
+                    "url": "http://localhost:3000/d/test",
+                    "duration": 10,
+                }
+            ],
+            "browser_settings": {
+                "browser": "chrome",
+                "fullscreen": True,
+            },
+            # grafana_kiosk_mode not specified, should default to True
+        }
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+            json.dump(config_data, f)
+            config_path = f.name
+
+        try:
+            runner = GrafanaRunner(config_path)
+
+            # Test URL preparation with default behavior (should add kiosk)
+            url = "http://localhost:3000/d/test"
+            prepared_url = runner.panel_navigator._prepare_panel_url(url)
+            assert prepared_url == "http://localhost:3000/d/test?kiosk"
+
+        finally:
+            os.unlink(config_path)
+
+    def test_grafana_kiosk_mode_complex_urls(self):
+        """Test URL preparation with complex URLs containing various parameters."""
+        config_data = {
+            "panels": [
+                {
+                    "name": "Test Panel",
+                    "url": "http://localhost:3000/d/test",
+                    "duration": 10,
+                }
+            ],
+            "browser_settings": {
+                "browser": "chrome",
+                "fullscreen": True,
+            },
+            "grafana_kiosk_mode": True,
+        }
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+            json.dump(config_data, f)
+            config_path = f.name
+
+        try:
+            runner = GrafanaRunner(config_path)
+
+            # Test URL with multiple parameters
+            url = "http://localhost:3000/d/test?orgId=1&refresh=5s"
+            prepared_url = runner.panel_navigator._prepare_panel_url(url)
+            assert (
+                prepared_url == "http://localhost:3000/d/test?orgId=1&refresh=5s&kiosk"
+            )
+
+            # Test URL that already has &kiosk
+            url = "http://localhost:3000/d/test?orgId=1&kiosk&refresh=5s"
+            prepared_url = runner.panel_navigator._prepare_panel_url(url)
+            assert (
+                prepared_url == "http://localhost:3000/d/test?orgId=1&kiosk&refresh=5s"
+            )
+
+            # Test URL with ?kiosk at the beginning
+            url = "http://localhost:3000/d/test?kiosk&orgId=1"
+            prepared_url = runner.panel_navigator._prepare_panel_url(url)
+            assert prepared_url == "http://localhost:3000/d/test?kiosk&orgId=1"
+
+        finally:
+            os.unlink(config_path)
+
+    @patch("browser_setup.webdriver.Chrome")
+    @patch("panel_navigator.WebDriverWait")
+    def test_navigate_to_panel_with_grafana_kiosk_integration(
+        self, mock_wait, mock_chrome
+    ):
+        """Test panel navigation with Grafana kiosk mode URL preparation."""
+        config_data = {
+            "panels": [
+                {
+                    "name": "Test Panel",
+                    "url": "http://localhost:3000/d/test",
+                    "duration": 10,
+                }
+            ],
+            "browser_settings": {
+                "browser": "chrome",
+                "fullscreen": True,
+            },
+            "grafana_kiosk_mode": True,
+        }
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+            json.dump(config_data, f)
+            config_path = f.name
+
+        try:
+            runner = GrafanaRunner(config_path)
+            mock_driver = Mock()
+            mock_chrome.return_value = mock_driver
+            mock_driver.execute_script.return_value = "complete"
+
+            # Mock page load wait
+            mock_wait_instance = Mock()
+            mock_wait.return_value = mock_wait_instance
+            mock_wait_instance.until.return_value = True
+
+            panel = config_data["panels"][0]
+
+            result = runner.panel_navigator.navigate_to_panel(mock_driver, panel)
+
+            assert result is True
+            # Verify that the URL was modified to include kiosk parameter
+            mock_driver.get.assert_called_once_with(
+                "http://localhost:3000/d/test?kiosk"
+            )
+
+        finally:
+            os.unlink(config_path)
+
+    def test_grafana_kiosk_mode_edge_cases(self):
+        """Test edge cases for Grafana kiosk mode URL preparation."""
+        config_data = {
+            "panels": [
+                {
+                    "name": "Test Panel",
+                    "url": "http://localhost:3000/d/test",
+                    "duration": 10,
+                }
+            ],
+            "browser_settings": {
+                "browser": "chrome",
+                "fullscreen": True,
+            },
+            "grafana_kiosk_mode": True,
+        }
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+            json.dump(config_data, f)
+            config_path = f.name
+
+        try:
+            runner = GrafanaRunner(config_path)
+
+            # Test URL with fragment
+            url = "http://localhost:3000/d/test#section"
+            prepared_url = runner.panel_navigator._prepare_panel_url(url)
+            assert prepared_url == "http://localhost:3000/d/test?kiosk#section"
+
+            # Test URL with kiosk in middle of parameters
+            url = "http://localhost:3000/d/test?orgId=1&kiosk=1&refresh=5s"
+            prepared_url = runner.panel_navigator._prepare_panel_url(url)
+            assert (
+                prepared_url
+                == "http://localhost:3000/d/test?orgId=1&kiosk=1&refresh=5s"
+            )
 
         finally:
             os.unlink(config_path)

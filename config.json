@@ -101,5 +101,6 @@
     "page_load_timeout": 30
   },
   "log_level": "INFO",
-  "refresh_browser_after_cycles": 10
+  "refresh_browser_after_cycles": 10,
+  "grafana_kiosk_mode": true
 }

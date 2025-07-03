@@ -68,6 +68,7 @@ class ConfigManager:
             },
             "log_level": "INFO",
             "refresh_browser_after_cycles": 10,
+            "grafana_kiosk_mode": True,
         }
 
         with open(self.config_path, "w") as f:
