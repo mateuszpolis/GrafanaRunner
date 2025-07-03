@@ -1,3 +1,10 @@
+## [1.11.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.10.0...v1.11.0) (2025-07-03)
+
+
+### ✨ Features
+
+* enhance panel navigation with authentication handling ([1e64ba9](https://github.com/mateuszpolis/GrafanaRunner/commit/1e64ba972d7050c7a411e55b0702ef2494ba9c79))
+
 ## [1.10.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.9.0...v1.10.0) (2025-07-03)
 
 
