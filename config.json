@@ -54,5 +54,6 @@
   },
   "log_level": "INFO",
   "refresh_browser_after_cycles": 10,
-  "grafana_kiosk_mode": true
+  "grafana_kiosk_mode": true,
+  "transition_overlay_min_duration": 2.0
 }

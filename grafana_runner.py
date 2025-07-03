@@ -66,20 +66,37 @@ class GrafanaRunner:
             self.driver = self.browser_setup.setup_browser()
             cycles_completed = 0
             refresh_after_cycles = self.config.get("refresh_browser_after_cycles", 10)
+            previous_panel = None
 
             while True:
                 for panel in self.config["panels"]:
-                    # Navigate to panel with authentication handling
+                    # Record time before transition starts
+                    transition_start = time.time()
+
+                    # Navigate to panel with authentication handling and transition overlay
                     if not self.panel_navigator.navigate_to_panel(
-                        self.driver, panel, self.auth_handler
+                        self.driver, panel, self.auth_handler, previous_panel
                     ):
                         self.logger.error("Failed to navigate to panel, skipping...")
                         continue
 
-                    # Display panel for specified duration
+                    # Calculate actual panel display duration (excluding transition time)
+                    transition_time = time.time() - transition_start
                     duration = panel["duration"]
-                    self.logger.info(f"Displaying panel for {duration} seconds")
-                    time.sleep(duration)
+                    actual_display_duration = max(
+                        duration - transition_time, 0.5
+                    )  # Minimum 0.5s display
+
+                    self.logger.info(
+                        f"Displaying panel '{panel.get('name', 'Unnamed')}' for {actual_display_duration:.1f}s "
+                        f"(transition took {transition_time:.1f}s)"
+                    )
+
+                    # Display panel for the calculated duration
+                    time.sleep(actual_display_duration)
+
+                    # Update previous panel for next transition
+                    previous_panel = panel
 
                 cycles_completed += 1
                 self.logger.info(f"Completed cycle {cycles_completed}")
@@ -91,6 +108,7 @@ class GrafanaRunner:
                 ):
                     self.logger.info("Refreshing browser to prevent memory issues")
                     self.refresh_browser()
+                    previous_panel = None  # Reset previous panel after browser refresh
 
         except KeyboardInterrupt:
             self.logger.info("Received interrupt signal")

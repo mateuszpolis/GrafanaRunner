@@ -80,7 +80,9 @@ class TestPanelNavigator:
 
         panel = {"name": "Test Panel", "url": "http://localhost:3000/d/test?orgId=1"}
 
-        result = self.navigator.navigate_to_panel(mock_driver, panel)
+        result = self.navigator.navigate_to_panel(
+            mock_driver, panel, previous_panel=None
+        )
 
         assert result is True
         # Verify that the URL was modified to include kiosk parameter
@@ -100,7 +102,9 @@ class TestPanelNavigator:
 
         panel = {"name": "Test Panel", "url": "http://localhost:3000/d/test"}
 
-        result = self.navigator.navigate_to_panel(mock_driver, panel, mock_auth_handler)
+        result = self.navigator.navigate_to_panel(
+            mock_driver, panel, mock_auth_handler, previous_panel=None
+        )
 
         assert result is True
         mock_driver.get.assert_called_once_with("http://localhost:3000/d/test?kiosk")
@@ -120,7 +124,9 @@ class TestPanelNavigator:
 
         panel = {"name": "Test Panel", "url": "http://localhost:3000/d/test"}
 
-        result = self.navigator.navigate_to_panel(mock_driver, panel, mock_auth_handler)
+        result = self.navigator.navigate_to_panel(
+            mock_driver, panel, mock_auth_handler, previous_panel=None
+        )
 
         assert result is False
         mock_driver.get.assert_called_once_with("http://localhost:3000/d/test?kiosk")

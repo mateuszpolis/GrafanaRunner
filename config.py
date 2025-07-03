@@ -151,6 +151,7 @@ class ConfigManager:
             "log_level": "INFO",
             "refresh_browser_after_cycles": 10,
             "grafana_kiosk_mode": True,
+            "transition_overlay_min_duration": 2.0,
         }
 
         with open(self.config_path, "w") as f:

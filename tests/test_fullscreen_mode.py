@@ -455,7 +455,9 @@ class TestFullscreenMode:
 
             # Navigate to panel
             panel = config_data["panels"][0]
-            runner.panel_navigator.navigate_to_panel(runner.driver, panel)
+            runner.panel_navigator.navigate_to_panel(
+                runner.driver, panel, previous_panel=None
+            )
 
             # Verify driver methods were called
             mock_driver.get.assert_called_once_with(panel["url"])
@@ -463,9 +465,9 @@ class TestFullscreenMode:
             # Verify WebDriverWait was used once for page load
             mock_wait.assert_called_once_with(mock_driver, 10)
 
-            # In the new implementation, apply_kiosk_enhancements is commented out
-            # So execute_script should not be called during navigation
-            mock_driver.execute_script.assert_not_called()
+            # With transition overlay feature, execute_script is called to show overlay
+            # Should be called at least once to show overlay
+            assert mock_driver.execute_script.call_count >= 1
 
         finally:
             os.unlink(config_path)
@@ -747,7 +749,9 @@ class TestFullscreenMode:
 
             panel = config_data["panels"][0]
 
-            result = runner.panel_navigator.navigate_to_panel(mock_driver, panel)
+            result = runner.panel_navigator.navigate_to_panel(
+                mock_driver, panel, previous_panel=None
+            )
 
             assert result is True
             # Verify that the URL was modified to include kiosk parameter
