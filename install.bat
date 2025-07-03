@@ -69,20 +69,29 @@ echo.
 set "CURRENT_DIR=%~dp0"
 set "CURRENT_DIR=%CURRENT_DIR:~0,-1%"
 
+:: ── Find out where python.exe lives ────────────────────────────────
+for /f "usebackq delims=" %%P in (`python -c "import sys; print(sys.executable)"`) do (
+    set "PYTHON_EXE=%%P"
+)
+echo Using Python interpreter at: %PYTHON_EXE%
+
 :: ── Create Windows startup task ──────────────────────────────────────────────
 echo Creating Windows startup task...
 schtasks /create ^
     /tn "GrafanaRunner" ^
-    /tr "C:\Users\cern2025\AppData\Local\Programs\Python\Python311\python.exe" \"%CURRENT_DIR%\grafana_runner.py\"" ^
+    /tr "\"%SystemRoot%\System32\cmd.exe\" /c ^
+         cd /d \"%CURRENT_DIR%\" && ^
+         \"%PYTHON_EXE%\" grafana_runner.py >> \"%CURRENT_DIR%\runner.log\" 2>&1\"" ^
     /sc onlogon ^
     /rl LIMITED ^
     /f
+
 if errorlevel 1 (
     echo WARNING: Could not create startup task automatically.
-    echo You can manually add the task in Task Scheduler:
+    echo You can manually add it in Task Scheduler:
     echo   • Trigger: At log on
     echo   • Action: Start a program
-    echo     Program/script: python
+    echo     Program/script: %PYTHON_EXE%
     echo     Arguments: "%CURRENT_DIR%\grafana_runner.py"
 ) else (
     echo Created Windows startup task: GrafanaRunner
