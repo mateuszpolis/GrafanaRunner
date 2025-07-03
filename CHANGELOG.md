@@ -1,3 +1,10 @@
+## [1.5.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.4.5...v1.5.0) (2025-07-03)
+
+
+### ✨ Features
+
+* implement browser setup and configuration for Grafana Runner ([05ca98a](https://github.com/mateuszpolis/GrafanaRunner/commit/05ca98a9930c3f996c898173c2a36929502e6705))
+
 ## [1.4.5](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.4.4...v1.4.5) (2025-07-03)
 
 
