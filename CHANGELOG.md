@@ -1,3 +1,10 @@
+## [1.10.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.9.0...v1.10.0) (2025-07-03)
+
+
+### ✨ Features
+
+* implement transition overlay for panel navigation ([c9e1183](https://github.com/mateuszpolis/GrafanaRunner/commit/c9e118345581c6d6e828decafd00164a88fd8f95))
+
 ## [1.9.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.8.0...v1.9.0) (2025-07-03)
 
 
