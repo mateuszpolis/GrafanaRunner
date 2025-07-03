@@ -1,3 +1,10 @@
+## [1.4.5](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.4.4...v1.4.5) (2025-07-03)
+
+
+### 🐛 Bug Fixes
+
+* streamline Windows startup task creation in installer ([6e70510](https://github.com/mateuszpolis/GrafanaRunner/commit/6e70510b22dd35df3840491e3bdc4e69616a6c6d))
+
 ## [1.4.4](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.4.3...v1.4.4) (2025-07-03)
 
 
