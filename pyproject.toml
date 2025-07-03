@@ -31,13 +31,6 @@ dependencies = [
     "selenium>=4.15.0",
     "webdriver-manager>=4.0.0",
 ]
-py-modules = [
-    "auth_handler",
-    "browser_setup",
-    "config",
-    "grafana_runner",
-    "panel_navigator",
-]
 
 [project.optional-dependencies]
 dev = [
@@ -56,6 +49,15 @@ Repository = "https://github.com/your-username/grafana-runner"
 
 [project.scripts]
 grafana-runner = "grafana_runner:main"
+
+[tool.setuptools]
+py-modules = [
+    "auth_handler",
+    "browser_setup",
+    "config",
+    "grafana_runner",
+    "panel_navigator",
+]
 
 [tool.black]
 line-length = 88
