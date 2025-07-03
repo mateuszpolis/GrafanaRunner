@@ -73,7 +73,7 @@ set "CURRENT_DIR=%CURRENT_DIR:~0,-1%"
 echo Creating Windows startup task...
 schtasks /create ^
     /tn "GrafanaRunner" ^
-    /tr "python \"%CURRENT_DIR%\grafana_runner.py\"" ^
+    /tr "C:\Users\cern2025\AppData\Local\Programs\Python\Python311\python.exe" \"%CURRENT_DIR%\grafana_runner.py\"" ^
     /sc onlogon ^
     /rl LIMITED ^
     /f
