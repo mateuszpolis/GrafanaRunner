@@ -110,6 +110,13 @@ jobs:
                   assert 'duration' in panel, f'Panel {i} missing duration'
                   assert isinstance(panel['duration'], (int, float)), f'Panel {i} duration must be numeric'
 
+                  # Validate variables if present
+                  if 'variables' in panel:
+                      assert isinstance(panel['variables'], dict), f'Panel {i} variables must be a dictionary'
+                      for var_name, var_values in panel['variables'].items():
+                          assert isinstance(var_values, list), f'Panel {i} variable \"{var_name}\" must be a list'
+                          assert len(var_values) > 0, f'Panel {i} variable \"{var_name}\" cannot be empty'
+
               print('✅ Configuration is valid')
           except Exception as e:
               print(f'❌ Configuration validation failed: {e}')

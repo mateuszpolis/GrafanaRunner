@@ -17,8 +17,11 @@
     },
     {
       "name": "System Monitoring & Power",
-      "url": "https://agrana.cern.ch/d/sys-dashboard/system-monitoring-and-power?orgId=1&from=now-1h&to=now&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-module=PMA0&refresh=1m",
-      "duration": 10
+      "url": "https://agrana.cern.ch/d/sys-dashboard/system-monitoring-and-power?var-module=module",
+      "duration": 35,
+      "variables": {
+        "module": ["PMA0", "PMA1", "PMA2", "PMA5", "PMA6", "PMA7", "TCM"]
+      }
     },
     {
       "name": "TCM_FRED Parameters",
@@ -32,63 +35,12 @@
     },
     {
       "name": "Time Align",
-      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=TIME_ALIGN&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
-      "duration": 5
-    },
-    {
-      "name": "includedInTrg",
-      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=includedInTrg&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
-      "duration": 5
-    },
-    {
-      "name": "isOn",
-      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=isOn&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
-      "duration": 5
-    },
-    {
-      "name": "ADC0_RANGE",
-      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=ADC0_RANGE&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
-      "duration": 5
-    },
-    {
-      "name": "ADC1_RANGE",
-      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=ADC1_RANGE&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
-      "duration": 5
-    },
-    {
-      "name": "THRESHOLD_CALIBR",
-      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=THRESHOLD_CALIBR&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
-      "duration": 5
-    },
-    {
-      "name": "CFD_ZERO",
-      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=CFD_ZERO&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
-      "duration": 5
-    },
-    {
-      "name": "ADC_ZERO",
-      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=ADC_ZERO&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
-      "duration": 5
-    },
-    {
-      "name": "ADC_DELAY",
-      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=ADC_DELAY&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
-      "duration": 5
-    },
-    {
-      "name": "CFD_THRESHOLD",
-      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=CFD_THRESHOLD&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
-      "duration": 5
-    },
-    {
-      "name": "TRG_RATE",
-      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=TRG_RATE&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
-      "duration": 5
-    },
-    {
-      "name": "CFD_RATE",
-      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-param=CFD_RATE&orgId=1&from=2025-06-23T02:41:29.645Z&to=2025-06-25T16:00:05.109Z&timezone=Europe%2FZurich&var-schema=FV0ARCH&var-pm=PMA1&refresh=30s",
-      "duration": 5
+      "url": "https://agrana.cern.ch/d/eeiicz3mjiq68c/pmxx-chxx-parameter-dashboards?var-pm=pm&var-param=param",
+      "duration": 288,
+      "variables": {
+        "param": ["TIME_ALIGN", "includedInTrg", "isOn", "ADC0_RANGE", "ADC1_RANGE", "THRESHOLD_CALIBR", "CFD_ZERO", "ADC_ZERO", "ADC_DELAY", "CFD_THRESHOLD", "TRG_RATE", "CFD_RATE"],
+        "pm": ["PMA0", "PMA1", "PMA2", "PMA5", "PMA6", "PMA7"]
+      }
     }
   ],
   "browser_settings": {
