@@ -76,12 +76,10 @@ for /f "usebackq delims=" %%P in (`python -c "import sys; print(sys.executable)"
 echo Using Python interpreter at: %PYTHON_EXE%
 
 :: ── Create Windows startup task ──────────────────────────────────────────────
-echo Creating Windows startup task...
+echo Creating Windows startup task…
 schtasks /create ^
     /tn "GrafanaRunner" ^
-    /tr "\"%SystemRoot%\System32\cmd.exe\" /c ^
-         cd /d \"%CURRENT_DIR%\" && ^
-         \"%PYTHON_EXE%\" grafana_runner.py >> \"%CURRENT_DIR%\runner.log\" 2>&1\"" ^
+    /tr "\"%SystemRoot%\System32\cmd.exe\" /c cd /d \"%CURRENT_DIR%\" && \"%PYTHON_EXE%\" grafana_runner.py >> \"%CURRENT_DIR%\runner.log\" 2>&1" ^
     /sc onlogon ^
     /rl LIMITED ^
     /f
