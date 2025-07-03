@@ -1,3 +1,10 @@
+## [1.9.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.8.0...v1.9.0) (2025-07-03)
+
+
+### ✨ Features
+
+* enhance panel configuration with variable support ([1c26ba5](https://github.com/mateuszpolis/GrafanaRunner/commit/1c26ba5c501ca6211a2941027c46e6b7d51e4abc))
+
 ## [1.8.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.7.0...v1.8.0) (2025-07-03)
 
 
