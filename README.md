@@ -4,14 +4,17 @@ A digital signage solution that displays Grafana dashboard panels in full-screen
 
 ## Features
 
-- **Kiosk Mode**: Full-screen browser display with no UI elements
+- **True Kiosk Mode**: Full-screen browser display with no UI elements, cursor hiding, and keyboard shortcut blocking
 - **Automatic Rotation**: Switches between panels based on configurable timing
 - **JSON Configuration**: Easy setup with URL and timing configuration
 - **Startup Integration**: Can run automatically on system startup
-- **Browser Support**: Chrome (recommended) and Firefox support
+- **Browser Support**: Chrome (recommended) and Firefox support with optimized configurations
+- **SSL Certificate Handling**: Built-in support for self-signed and internal certificates
 - **Logging**: Comprehensive logging for monitoring and debugging
 - **Memory Management**: Automatic browser refresh to prevent memory leaks
 - **Graceful Shutdown**: Handles interruption signals properly
+- **Modular Architecture**: Clean, maintainable code structure with separate modules
+- **Enhanced Security**: Configurable web security and SSL options for internal deployments
 
 ## Quick Start
 
@@ -58,6 +61,8 @@ Edit `config.json` with your Grafana panel URLs:
     "browser": "chrome",
     "fullscreen": true,
     "disable_extensions": true,
+    "disable_web_security": false,
+    "ignore_ssl_errors": true,
     "incognito": true,
     "page_load_timeout": 30
   },
@@ -136,9 +141,10 @@ Each panel in the `panels` array supports:
 ### Browser Settings
 
 - `browser`: "chrome" or "firefox" (chrome recommended)
-- `fullscreen`: Enable full-screen kiosk mode
+- `fullscreen`: Enable full-screen kiosk mode with OS-level fullscreen
 - `disable_extensions`: Disable browser extensions
 - `disable_web_security`: Allow cross-origin requests (use carefully)
+- `ignore_ssl_errors`: Bypass SSL certificate validation (useful for internal/self-signed certificates)
 - `incognito`: Use private/incognito mode
 - `page_load_timeout`: Page load timeout in seconds
 
@@ -146,6 +152,33 @@ Each panel in the `panels` array supports:
 
 - `log_level`: "DEBUG", "INFO", "WARNING", "ERROR"
 - `refresh_browser_after_cycles`: Restart browser every N cycles (0 to disable)
+
+### SSL Certificate Handling
+
+For internal deployments with self-signed certificates, set:
+
+```json
+{
+  "browser_settings": {
+    "ignore_ssl_errors": true,
+    "disable_web_security": true
+  }
+}
+```
+
+**Security Note**: Only use these settings in trusted internal environments.
+
+## Enhanced Kiosk Features
+
+The application provides a true kiosk experience with:
+
+- **App Mode**: Chrome runs in app mode removing all browser UI
+- **OS Fullscreen**: Native fullscreen mode for true digital signage
+- **Cursor Hiding**: JavaScript-based cursor removal for clean display
+- **Keyboard Blocking**: Disables F11, F12, Ctrl+Shift+I, and other shortcuts
+- **Right-click Blocking**: Prevents context menus
+- **Text Selection Blocking**: Prevents highlighting and selection
+- **Scrollbar Hiding**: Removes all scrollbars for clean appearance
 
 ## Grafana URL Tips
 
@@ -175,10 +208,20 @@ http://grafana.example.com:3000/d/dashboard123?orgId=1&refresh=5s&kiosk&from=now
    - Check network connectivity
    - Ensure Grafana authentication is handled (use API keys or public dashboards)
 
-3. **Memory issues**
+3. **SSL Certificate errors**
+   - Set `ignore_ssl_errors: true` for self-signed certificates
+   - Verify certificate validity for external sites
+   - Check network firewall settings
+
+4. **Memory issues**
    - Reduce `refresh_browser_after_cycles` value
    - Monitor system resources
    - Consider using Firefox instead of Chrome
+
+5. **Fullscreen not working**
+   - Ensure `fullscreen: true` in browser settings
+   - Check OS permissions for application fullscreen
+   - Try different browsers
 
 ### Logs
 
@@ -213,13 +256,34 @@ python grafana_runner.py debug-config.json
 - **Python**: 3.7+
 - **Browser**: Chrome (recommended) or Firefox
 - **Network**: Access to Grafana instance
+- **Memory**: 2GB+ RAM recommended for stable operation
+- **Display**: Any resolution, optimized for 1920x1080+
 
 ## Security Considerations
 
 - The application runs a browser in kiosk mode with some security restrictions disabled
-- Consider network security when allowing cross-origin requests
+- `disable_web_security` and `ignore_ssl_errors` should only be used in trusted environments
 - Use HTTPS for Grafana connections when possible
 - Consider running in a sandboxed environment for production deployments
+- The application blocks most user interactions, but physical access should still be restricted
+
+## Architecture
+
+### Modular Design
+
+The application is built with a clean modular architecture:
+
+- **`grafana_runner.py`**: Main orchestrator and entry point
+- **`config.py`**: Configuration loading, validation, and default creation
+- **`browser_setup.py`**: Browser initialization and kiosk mode configuration
+- **`panel_navigator.py`**: Panel navigation and JavaScript-based enhancements
+
+### Key Components
+
+1. **ConfigManager**: Handles all configuration operations
+2. **BrowserSetup**: Manages browser lifecycle and kiosk configuration
+3. **PanelNavigator**: Handles panel loading and kiosk enhancements
+4. **GrafanaRunner**: Orchestrates the main execution loop
 
 ## Development
 
@@ -227,14 +291,38 @@ python grafana_runner.py debug-config.json
 
 ```
 GrafanaRunner/
-├── grafana_runner.py    # Main application
+├── grafana_runner.py    # Main application orchestrator
+├── config.py            # Configuration management
+├── browser_setup.py     # Browser setup and kiosk mode
+├── panel_navigator.py   # Panel navigation and enhancements
 ├── config.json          # Configuration file
 ├── requirements.txt     # Python dependencies
 ├── install.sh          # Installation script (macOS/Linux)
 ├── install.bat         # Installation script (Windows)
 ├── run.sh              # Run script (macOS/Linux)
 ├── run.bat             # Run script (Windows)
+├── tests/              # Comprehensive test suite
+│   ├── test_browser_setup.py
+│   ├── test_config.py
+│   ├── test_config_validation.py
+│   ├── test_fullscreen_mode.py
+│   └── test_utils.py
 └── README.md           # Documentation
+```
+
+### Testing
+
+The project includes a comprehensive test suite:
+
+```bash
+# Run all tests
+python -m pytest tests/ -v
+
+# Run with coverage
+python -m pytest tests/ --cov=. --cov-report=html
+
+# Run specific test module
+python -m pytest tests/test_browser_setup.py -v
 ```
 
 ### Contributing
@@ -242,8 +330,19 @@ GrafanaRunner/
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+4. Run the test suite to ensure nothing breaks
+5. Update documentation if needed
+6. Submit a pull request
+
+### Code Quality
+
+The project maintains high code quality with:
+- Modular, single-responsibility design
+- Comprehensive error handling
+- Extensive logging
+- Full test coverage
+- Clear documentation
+- Type hints where appropriate
 
 ## License
 
