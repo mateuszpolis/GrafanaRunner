@@ -1,5 +1,7 @@
 selenium>=4.15.0
 webdriver-manager>=4.0.0
+pyotp>=2.8.0
+python-dotenv>=1.0.0
 
 # Development dependencies (also available via pip install -e ".[dev]")
 # Uncomment for standalone development setup

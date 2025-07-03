@@ -9,6 +9,7 @@ import signal
 import sys
 import time
 
+from auth_handler import AuthHandler
 from browser_setup import BrowserSetup
 from config import ConfigManager
 from panel_navigator import PanelNavigator
@@ -25,13 +26,20 @@ class GrafanaRunner:
         self.config_manager = ConfigManager(config_path)
         self.config = self.config_manager.load_config()
 
+        self.driver = None
+        self.current_panel_index = 0
+        self.setup_logging()
+
         # Initialize modules
         self.browser_setup = BrowserSetup(self.config)
         self.panel_navigator = PanelNavigator(self.config)
 
-        self.driver = None
-        self.current_panel_index = 0
-        self.setup_logging()
+        # Initialize auth handler (optional - may be disabled if credentials not provided)
+        try:
+            self.auth_handler = AuthHandler(self.config)
+        except Exception as e:
+            self.logger.warning(f"Failed to initialize authentication handler: {e}")
+            self.auth_handler = None
 
         # Handle graceful shutdown
         signal.signal(signal.SIGINT, self.signal_handler)
@@ -61,7 +69,12 @@ class GrafanaRunner:
 
             while True:
                 for panel in self.config["panels"]:
-                    self.panel_navigator.navigate_to_panel(self.driver, panel)
+                    # Navigate to panel with authentication handling
+                    if not self.panel_navigator.navigate_to_panel(
+                        self.driver, panel, self.auth_handler
+                    ):
+                        self.logger.error("Failed to navigate to panel, skipping...")
+                        continue
 
                     # Display panel for specified duration
                     duration = panel["duration"]

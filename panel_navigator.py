@@ -16,7 +16,7 @@ class PanelNavigator:
         self.config = config
         self.logger = logging.getLogger(__name__)
 
-    def navigate_to_panel(self, driver, panel):
+    def navigate_to_panel(self, driver, panel, auth_handler=None):
         """Navigate to a specific Grafana panel."""
         try:
             self.logger.info(
@@ -29,16 +29,29 @@ class PanelNavigator:
                 lambda d: d.execute_script("return document.readyState") == "complete"
             )
 
+            # Check for authentication requirement
+            if auth_handler and not auth_handler.check_and_handle_authentication(
+                driver
+            ):
+                self.logger.error(
+                    "Authentication failed, cannot proceed with panel navigation"
+                )
+                return False
+
             # Additional wait for Grafana panels to render
             time.sleep(3)
 
             # Apply kiosk mode enhancements after page load
             # self.apply_kiosk_enhancements(driver)
 
+            return True
+
         except TimeoutException:
             self.logger.warning(f"Timeout loading panel: {panel['url']}")
+            return False
         except Exception as e:
             self.logger.error(f"Error loading panel {panel['url']}: {e}")
+            return False
 
     def apply_kiosk_enhancements(self, driver):
         """Apply additional kiosk mode enhancements via JavaScript."""

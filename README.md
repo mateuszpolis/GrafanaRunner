@@ -10,6 +10,7 @@ A digital signage solution that displays Grafana dashboard panels in full-screen
 - **Startup Integration**: Can run automatically on system startup
 - **Browser Support**: Chrome (recommended) and Firefox support with optimized configurations
 - **SSL Certificate Handling**: Built-in support for self-signed and internal certificates
+- **CERN SSO Authentication**: Automatic login handling with CERN Single Sign-On and TOTP support
 - **Logging**: Comprehensive logging for monitoring and debugging
 - **Memory Management**: Automatic browser refresh to prevent memory leaks
 - **Graceful Shutdown**: Handles interruption signals properly
@@ -180,6 +181,94 @@ The application provides a true kiosk experience with:
 - **Text Selection Blocking**: Prevents highlighting and selection
 - **Scrollbar Hiding**: Removes all scrollbars for clean appearance
 
+## CERN SSO Authentication
+
+The application supports automatic authentication with CERN Single Sign-On (SSO) when accessing protected Grafana instances. When a login redirect is detected, the application automatically handles the authentication flow.
+
+### Authentication Setup
+
+1. **Create Environment File**
+
+   Copy the example environment file:
+   ```bash
+   cp env.example .env.local
+   ```
+
+2. **Configure Credentials**
+
+   Edit `.env.local` with your CERN credentials:
+   ```env
+   # CERN SSO Username
+   CERN_USERNAME=your_cern_username
+
+   # CERN SSO Password
+   CERN_PASSWORD=your_cern_password
+
+   # CERN TOTP Secret (from your authenticator app)
+   CERN_TOTP_SECRET=your_totp_secret_key
+   ```
+
+3. **TOTP Secret Setup**
+
+   To get your TOTP secret:
+   - Go to CERN Account Settings
+   - Enable two-factor authentication
+   - When setting up your authenticator app, save the secret key (usually shown as a QR code alternative)
+   - Use this secret key in the `CERN_TOTP_SECRET` variable
+
+### Authentication Flow
+
+The application automatically handles the complete authentication process:
+
+1. **Detection**: Monitors for redirects to CERN login pages
+2. **SSO Login**: Clicks the "Sign in with CERN SSO" button
+3. **Credentials**: Fills in username and password automatically
+4. **TOTP**: Generates and enters the current TOTP code
+5. **Redirect**: Waits for successful authentication and return to Grafana
+
+### Optional Authentication
+
+Authentication is optional and gracefully handled:
+
+- **With Credentials**: Full automatic authentication when login is required
+- **Without Credentials**: Application continues normally but logs warnings when login pages are encountered
+- **Partial Credentials**: Application warns about missing credentials and disables authentication
+
+### Security Notes
+
+- Store credentials securely in `.env.local` (not committed to version control)
+- The `.env.local` file is automatically ignored by git
+- Use environment variables for production deployments
+- Consider using service accounts or API keys for unattended operation
+
+### Troubleshooting Authentication
+
+1. **Login page detected but authentication disabled**
+   - Check that all required environment variables are set
+   - Verify the `.env.local` file is in the correct location
+   - Ensure credentials are correct
+
+2. **TOTP code rejection**
+   - Verify the TOTP secret is correct
+   - Check system time synchronization
+   - Ensure the secret is the base32 encoded key, not a 6-digit code
+
+3. **Authentication timeout**
+   - Check network connectivity to CERN authentication servers
+   - Verify credentials are valid and account is not locked
+   - Monitor logs for specific error messages
+
+### Dependencies
+
+The authentication feature requires additional Python packages:
+
+```bash
+# Install authentication dependencies
+pip install pyotp python-dotenv
+```
+
+These are automatically installed when using the provided installation scripts.
+
 ## Grafana URL Tips
 
 For best kiosk display, add these parameters to your Grafana URLs:
@@ -277,13 +366,15 @@ The application is built with a clean modular architecture:
 - **`config.py`**: Configuration loading, validation, and default creation
 - **`browser_setup.py`**: Browser initialization and kiosk mode configuration
 - **`panel_navigator.py`**: Panel navigation and JavaScript-based enhancements
+- **`auth_handler.py`**: CERN SSO authentication and TOTP handling
 
 ### Key Components
 
 1. **ConfigManager**: Handles all configuration operations
 2. **BrowserSetup**: Manages browser lifecycle and kiosk configuration
 3. **PanelNavigator**: Handles panel loading and kiosk enhancements
-4. **GrafanaRunner**: Orchestrates the main execution loop
+4. **AuthHandler**: Manages CERN SSO authentication and TOTP codes
+5. **GrafanaRunner**: Orchestrates the main execution loop
 
 ## Development
 
@@ -295,13 +386,16 @@ GrafanaRunner/
 ├── config.py            # Configuration management
 ├── browser_setup.py     # Browser setup and kiosk mode
 ├── panel_navigator.py   # Panel navigation and enhancements
+├── auth_handler.py      # CERN SSO authentication and TOTP
 ├── config.json          # Configuration file
+├── env.example          # Example environment configuration
 ├── requirements.txt     # Python dependencies
 ├── install.sh          # Installation script (macOS/Linux)
 ├── install.bat         # Installation script (Windows)
 ├── run.sh              # Run script (macOS/Linux)
 ├── run.bat             # Run script (Windows)
 ├── tests/              # Comprehensive test suite
+│   ├── test_auth_handler.py
 │   ├── test_browser_setup.py
 │   ├── test_config.py
 │   ├── test_config_validation.py
