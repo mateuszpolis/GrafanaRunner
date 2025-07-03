@@ -1,3 +1,10 @@
+## [1.8.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.7.0...v1.8.0) (2025-07-03)
+
+
+### ✨ Features
+
+* add Grafana kiosk mode support ([9258bc1](https://github.com/mateuszpolis/GrafanaRunner/commit/9258bc18403509948b032e5ba0474cbe508ee5c7))
+
 ## [1.7.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.6.0...v1.7.0) (2025-07-03)
 
 
