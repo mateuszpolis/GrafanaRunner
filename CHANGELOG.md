@@ -1,3 +1,10 @@
+## [1.4.4](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.4.3...v1.4.4) (2025-07-03)
+
+
+### 🐛 Bug Fixes
+
+* dynamically determine Python executable path in Windows installer ([99401ba](https://github.com/mateuszpolis/GrafanaRunner/commit/99401ba0964e5559077f8f9cb6691d3e62520f5c))
+
 ## [1.4.3](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.4.2...v1.4.3) (2025-07-03)
 
 
