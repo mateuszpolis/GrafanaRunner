@@ -226,3 +226,71 @@ class TestTransitionOverlay:
 
                 # Navigation should still succeed
                 assert result is True
+
+    def test_skip_overlay_when_auth_disabled(self):
+        """Test that overlay is skipped when authentication is disabled."""
+        mock_driver = Mock()
+        mock_driver.execute_script.return_value = "complete"
+
+        # Mock auth handler with auth_enabled = False
+        mock_auth_handler = Mock()
+        mock_auth_handler.auth_enabled = False
+        mock_auth_handler.is_login_page.return_value = False
+        mock_auth_handler.is_totp_page.return_value = False
+        mock_auth_handler.check_and_handle_authentication.return_value = True
+
+        with patch("panel_navigator.WebDriverWait") as mock_wait:
+            mock_wait_instance = Mock()
+            mock_wait.return_value = mock_wait_instance
+            mock_wait_instance.until.return_value = True
+
+            with patch("panel_navigator.time.sleep"):
+                current_panel = {
+                    "name": "Test",
+                    "url": "http://test.com",
+                    "duration": 10,
+                }
+
+                result = self.navigator.navigate_to_panel(
+                    mock_driver, current_panel, auth_handler=mock_auth_handler
+                )
+
+                assert result is True
+                # Should navigate directly without showing overlay
+                mock_driver.get.assert_called_once()
+                # execute_script should not be called for overlay
+                mock_driver.execute_script.assert_not_called()
+
+    def test_skip_overlay_when_on_login_page(self):
+        """Test that overlay is skipped when currently on a login page."""
+        mock_driver = Mock()
+        mock_driver.execute_script.return_value = "complete"
+
+        # Mock auth handler on login page
+        mock_auth_handler = Mock()
+        mock_auth_handler.auth_enabled = True
+        mock_auth_handler.is_login_page.return_value = True  # Currently on login page
+        mock_auth_handler.is_totp_page.return_value = False
+        mock_auth_handler.check_and_handle_authentication.return_value = True
+
+        with patch("panel_navigator.WebDriverWait") as mock_wait:
+            mock_wait_instance = Mock()
+            mock_wait.return_value = mock_wait_instance
+            mock_wait_instance.until.return_value = True
+
+            with patch("panel_navigator.time.sleep"):
+                current_panel = {
+                    "name": "Test",
+                    "url": "http://test.com",
+                    "duration": 10,
+                }
+
+                result = self.navigator.navigate_to_panel(
+                    mock_driver, current_panel, auth_handler=mock_auth_handler
+                )
+
+                assert result is True
+                # Should navigate directly without showing overlay
+                mock_driver.get.assert_called_once()
+                # execute_script should not be called for overlay
+                mock_driver.execute_script.assert_not_called()

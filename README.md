@@ -6,6 +6,8 @@ A digital signage solution that displays Grafana dashboard panels in full-screen
 
 - **True Kiosk Mode**: Full-screen browser display with no UI elements, cursor hiding, and keyboard shortcut blocking
 - **Automatic Rotation**: Switches between panels based on configurable timing
+- **Variable Panels**: Define panels with multiple parameter combinations that expand automatically
+- **Smooth Transitions**: Professional transition overlays between panels showing current status
 - **JSON Configuration**: Easy setup with URL and timing configuration
 - **Startup Integration**: Can run automatically on system startup
 - **Browser Support**: Chrome (recommended) and Firefox support with optimized configurations
@@ -68,7 +70,9 @@ Edit `config.json` with your Grafana panel URLs:
     "page_load_timeout": 30
   },
   "log_level": "INFO",
-  "refresh_browser_after_cycles": 10
+  "refresh_browser_after_cycles": 10,
+  "grafana_kiosk_mode": true,
+  "transition_overlay_min_duration": 2.0
 }
 ```
 
@@ -138,6 +142,40 @@ Each panel in the `panels` array supports:
 - `name` (string): Display name for logging
 - `url` (string): Full Grafana panel URL
 - `duration` (number): Display time in seconds
+- `variables` (object, optional): Variable combinations that expand into multiple panels
+
+#### Variable Panels
+
+Variable panels allow you to define a single panel configuration that automatically expands into multiple panels with different parameter combinations. This is useful for displaying the same dashboard with different filters or settings.
+
+Example variable panel configuration:
+
+```json
+{
+  "panels": [
+    {
+      "name": "System Status",
+      "url": "http://grafana.example.com/d/system?var-environment=environment&var-region=region",
+      "duration": 30,
+      "variables": {
+        "environment": ["production", "staging", "development"],
+        "region": ["us-east", "us-west", "eu-central"]
+      }
+    }
+  ]
+}
+```
+
+This configuration automatically generates 9 panels (3 environments × 3 regions) with URLs like:
+- `http://grafana.example.com/d/system?var-environment=production&var-region=us-east`
+- `http://grafana.example.com/d/system?var-environment=production&var-region=us-west`
+- And so on...
+
+**Variable Panel Features:**
+- **URL Substitution**: Variables in URLs are replaced with actual values
+- **Duration Distribution**: Total duration is evenly distributed across all combinations
+- **Cartesian Product**: All possible combinations of variables are generated
+- **Flexible Naming**: Panel names are automatically updated with variable values
 
 ### Browser Settings
 
@@ -153,6 +191,17 @@ Each panel in the `panels` array supports:
 
 - `log_level`: "DEBUG", "INFO", "WARNING", "ERROR"
 - `refresh_browser_after_cycles`: Restart browser every N cycles (0 to disable)
+- `grafana_kiosk_mode`: Enable automatic kiosk parameter addition (default: true)
+- `transition_overlay_min_duration`: Minimum time to show transition overlay in seconds (default: 2.0)
+
+#### Transition Overlay
+
+The application displays a professional transition overlay when switching between panels, showing the current and next panel information. The overlay can be configured with:
+
+- **Minimum Duration**: Ensures the overlay is visible for at least the specified time
+- **Smart Authentication**: Automatically skips overlay during login processes
+- **Variable Display**: Shows current variable values when using variable panels
+- **Smooth Animation**: Professional fade and slide animations for seamless transitions
 
 ### SSL Certificate Handling
 

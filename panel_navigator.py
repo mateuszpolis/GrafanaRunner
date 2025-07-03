@@ -26,42 +26,85 @@ class PanelNavigator:
                 f"Loading panel: {panel.get('name', 'Unnamed')} - {panel_url}"
             )
 
-            # Get minimum transition duration
-            min_overlay_duration = self.config.get(
-                "transition_overlay_min_duration", 2.0
-            )
+            # Check if authentication is likely needed before showing overlay
+            skip_overlay = False
+            if auth_handler:
+                # Skip overlay if authentication is not enabled (no credentials loaded)
+                if (
+                    not hasattr(auth_handler, "auth_enabled")
+                    or not auth_handler.auth_enabled
+                ):
+                    skip_overlay = True
+                    self.logger.debug("Authentication not enabled, skipping overlay")
+                # Also skip overlay if we're currently on a login page
+                elif auth_handler.is_login_page(driver) or auth_handler.is_totp_page(
+                    driver
+                ):
+                    skip_overlay = True
+                    self.logger.debug(
+                        "Currently on authentication page, skipping overlay"
+                    )
 
-            # Show transition overlay on current page
-            self.show_transition_overlay(driver, previous_panel, panel)
+            if skip_overlay:
+                # Navigate directly without overlay for authentication
+                self.logger.debug("Navigating without overlay for authentication")
+                driver.get(panel_url)
 
-            # Keep overlay visible for minimum duration on current page
-            self.logger.debug(
-                f"Showing transition overlay for {min_overlay_duration}s while loading new page"
-            )
-            time.sleep(min_overlay_duration)
-
-            # Now navigate to new panel (this will clear the overlay)
-            driver.get(panel_url)
-
-            # Wait for page to load completely
-            WebDriverWait(driver, 10).until(
-                lambda d: d.execute_script("return document.readyState") == "complete"
-            )
-
-            # Check for authentication requirement
-            if auth_handler and not auth_handler.check_and_handle_authentication(
-                driver
-            ):
-                self.logger.error(
-                    "Authentication failed, cannot proceed with panel navigation"
+                # Wait for page to load completely
+                WebDriverWait(driver, 10).until(
+                    lambda d: d.execute_script("return document.readyState")
+                    == "complete"
                 )
-                return False
+
+                # Handle authentication
+                if auth_handler and not auth_handler.check_and_handle_authentication(
+                    driver
+                ):
+                    self.logger.error(
+                        "Authentication failed, cannot proceed with panel navigation"
+                    )
+                    return False
+            else:
+                # Show transition overlay for smooth experience
+                self.logger.debug("Showing transition overlay for smooth navigation")
+
+                # Get minimum transition duration
+                min_overlay_duration = self.config.get(
+                    "transition_overlay_min_duration", 2.0
+                )
+
+                # Show transition overlay on current page
+                self.show_transition_overlay(driver, previous_panel, panel)
+
+                # Keep overlay visible for minimum duration on current page
+                self.logger.debug(
+                    f"Showing transition overlay for {min_overlay_duration}s"
+                )
+                time.sleep(min_overlay_duration)
+
+                # Navigate to new panel (this will clear the overlay)
+                driver.get(panel_url)
+
+                # Wait for page to load completely
+                WebDriverWait(driver, 10).until(
+                    lambda d: d.execute_script("return document.readyState")
+                    == "complete"
+                )
+
+                # Check for authentication requirement (should be minimal since credentials are loaded)
+                if auth_handler and not auth_handler.check_and_handle_authentication(
+                    driver
+                ):
+                    self.logger.error(
+                        "Authentication failed, cannot proceed with panel navigation"
+                    )
+                    return False
 
             # Additional wait for Grafana panels to render
             time.sleep(3)
 
-            # New page is now visible - no overlay needed
-            self.logger.debug("New page loaded and visible")
+            # Panel navigation completed
+            self.logger.debug("Panel navigation completed successfully")
 
             # Apply kiosk mode enhancements after page load
             # self.apply_kiosk_enhancements(driver)
