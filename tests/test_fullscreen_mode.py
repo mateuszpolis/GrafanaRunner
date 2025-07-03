@@ -53,7 +53,7 @@ from grafana_runner import GrafanaRunner  # noqa: E402
 class TestFullscreenMode:
     """Test cases for enhanced fullscreen mode and kiosk functionality."""
 
-    @patch("grafana_runner.webdriver.Chrome")
+    @patch("browser_setup.webdriver.Chrome")
     def test_enhanced_chrome_fullscreen_flags(self, mock_chrome):
         """Test that all enhanced fullscreen Chrome flags are properly set."""
         config_data = {
@@ -81,7 +81,7 @@ class TestFullscreenMode:
             mock_driver = Mock()
             mock_chrome.return_value = mock_driver
 
-            with patch("grafana_runner.ChromeOptions") as mock_options_class:
+            with patch("browser_setup.ChromeOptions") as mock_options_class:
                 mock_options = Mock()
                 mock_options_class.return_value = mock_options
                 mock_options.arguments = []
@@ -91,7 +91,7 @@ class TestFullscreenMode:
 
                 mock_options.add_argument.side_effect = add_argument_side_effect
 
-                runner.setup_browser()
+                runner.driver = runner.browser_setup.setup_browser()
 
                 # Verify new simplified fullscreen arguments are present
                 # The new implementation uses --app mode with first panel URL
@@ -120,7 +120,7 @@ class TestFullscreenMode:
         finally:
             os.unlink(config_path)
 
-    @patch("grafana_runner.webdriver.Chrome")
+    @patch("browser_setup.webdriver.Chrome")
     def test_chrome_preferences_for_kiosk_mode(self, mock_chrome):
         """Test that Chrome preferences are properly set for kiosk mode."""
         config_data = {
@@ -147,11 +147,11 @@ class TestFullscreenMode:
             mock_driver = Mock()
             mock_chrome.return_value = mock_driver
 
-            with patch("grafana_runner.ChromeOptions") as mock_options_class:
+            with patch("browser_setup.ChromeOptions") as mock_options_class:
                 mock_options = Mock()
                 mock_options_class.return_value = mock_options
 
-                runner.setup_browser()
+                runner.driver = runner.browser_setup.setup_browser()
 
                 # Verify experimental options were set with preferences
                 mock_options.add_experimental_option.assert_any_call(
@@ -182,7 +182,7 @@ class TestFullscreenMode:
         finally:
             os.unlink(config_path)
 
-    @patch("grafana_runner.webdriver.Firefox")
+    @patch("browser_setup.webdriver.Firefox")
     def test_enhanced_firefox_fullscreen_setup(self, mock_firefox):
         """Test enhanced Firefox fullscreen setup with preferences."""
         config_data = {
@@ -210,11 +210,11 @@ class TestFullscreenMode:
             mock_driver = Mock()
             mock_firefox.return_value = mock_driver
 
-            with patch("grafana_runner.FirefoxOptions") as mock_options_class:
+            with patch("browser_setup.FirefoxOptions") as mock_options_class:
                 mock_options = Mock()
                 mock_options_class.return_value = mock_options
 
-                runner.setup_browser()
+                runner.driver = runner.browser_setup.setup_browser()
 
                 # Verify Firefox kiosk arguments
                 mock_options.add_argument.assert_any_call("--kiosk")
@@ -247,7 +247,7 @@ class TestFullscreenMode:
         finally:
             os.unlink(config_path)
 
-    @patch("grafana_runner.webdriver.Chrome")
+    @patch("browser_setup.webdriver.Chrome")
     def test_ensure_fullscreen_mode_method(self, mock_chrome):
         """Test the ensure_fullscreen_mode method with JavaScript execution."""
         config_data = {
@@ -276,7 +276,7 @@ class TestFullscreenMode:
             runner.driver = mock_driver
 
             # Test the ensure_fullscreen_mode method directly
-            runner.ensure_fullscreen_mode()
+            runner.browser_setup.ensure_fullscreen_mode(runner.driver)
 
             # In the new implementation, ensure_fullscreen_mode only acts when fullscreen is disabled
             # Since fullscreen is enabled in config, it should not call maximize_window
@@ -289,7 +289,7 @@ class TestFullscreenMode:
         finally:
             os.unlink(config_path)
 
-    @patch("grafana_runner.webdriver.Chrome")
+    @patch("browser_setup.webdriver.Chrome")
     def test_ensure_fullscreen_mode_exception_handling(self, mock_chrome):
         """Test that ensure_fullscreen_mode handles exceptions gracefully."""
         config_data = {
@@ -321,7 +321,7 @@ class TestFullscreenMode:
             mock_driver.maximize_window.side_effect = Exception("Browser error")
 
             # Method should not raise exception
-            runner.ensure_fullscreen_mode()
+            runner.browser_setup.ensure_fullscreen_mode(runner.driver)
 
             # Verify it tried to call maximize_window
             mock_driver.maximize_window.assert_called_once()
@@ -329,7 +329,7 @@ class TestFullscreenMode:
         finally:
             os.unlink(config_path)
 
-    @patch("grafana_runner.webdriver.Chrome")
+    @patch("browser_setup.webdriver.Chrome")
     def test_apply_kiosk_enhancements_method(self, mock_chrome):
         """Test the apply_kiosk_enhancements method with CSS and event handling."""
         config_data = {
@@ -358,7 +358,7 @@ class TestFullscreenMode:
             runner.driver = mock_driver
 
             # Test the apply_kiosk_enhancements method directly
-            runner.apply_kiosk_enhancements()
+            runner.panel_navigator.apply_kiosk_enhancements(runner.driver)
 
             # Verify JavaScript was executed
             mock_driver.execute_script.assert_called_once()
@@ -376,7 +376,7 @@ class TestFullscreenMode:
         finally:
             os.unlink(config_path)
 
-    @patch("grafana_runner.webdriver.Chrome")
+    @patch("browser_setup.webdriver.Chrome")
     def test_apply_kiosk_enhancements_exception_handling(self, mock_chrome):
         """Test that apply_kiosk_enhancements handles exceptions gracefully."""
         config_data = {
@@ -408,7 +408,7 @@ class TestFullscreenMode:
             mock_driver.execute_script.side_effect = Exception("JavaScript error")
 
             # Method should not raise exception
-            runner.apply_kiosk_enhancements()
+            runner.panel_navigator.apply_kiosk_enhancements(runner.driver)
 
             # Verify it tried to execute script
             mock_driver.execute_script.assert_called_once()
@@ -416,9 +416,9 @@ class TestFullscreenMode:
         finally:
             os.unlink(config_path)
 
-    @patch("grafana_runner.webdriver.Chrome")
-    @patch("grafana_runner.WebDriverWait")
-    @patch("grafana_runner.time.sleep")
+    @patch("browser_setup.webdriver.Chrome")
+    @patch("panel_navigator.WebDriverWait")
+    @patch("panel_navigator.time.sleep")
     def test_navigate_to_panel_with_kiosk_enhancements(
         self, mock_sleep, mock_wait, mock_chrome
     ):
@@ -455,7 +455,7 @@ class TestFullscreenMode:
 
             # Navigate to panel
             panel = config_data["panels"][0]
-            runner.navigate_to_panel(panel)
+            runner.panel_navigator.navigate_to_panel(runner.driver, panel)
 
             # Verify driver methods were called
             mock_driver.get.assert_called_once_with(panel["url"])
@@ -470,7 +470,7 @@ class TestFullscreenMode:
         finally:
             os.unlink(config_path)
 
-    @patch("grafana_runner.webdriver.Chrome")
+    @patch("browser_setup.webdriver.Chrome")
     def test_fullscreen_mode_integration_flow(self, mock_chrome):
         """Test the complete fullscreen mode integration flow."""
         config_data = {
@@ -499,7 +499,7 @@ class TestFullscreenMode:
             mock_chrome.return_value = mock_driver
 
             # Test the complete browser setup flow
-            runner.setup_browser()
+            runner.driver = runner.browser_setup.setup_browser()
 
             # Verify driver configuration
             mock_driver.set_page_load_timeout.assert_called_with(30)
@@ -511,7 +511,7 @@ class TestFullscreenMode:
         finally:
             os.unlink(config_path)
 
-    @patch("grafana_runner.webdriver.Chrome")
+    @patch("browser_setup.webdriver.Chrome")
     def test_fullscreen_disabled_skips_enhancements(self, mock_chrome):
         """Test that fullscreen enhancements are skipped when fullscreen is disabled."""
         config_data = {
@@ -540,7 +540,7 @@ class TestFullscreenMode:
             mock_chrome.return_value = mock_driver
 
             # Test browser setup with fullscreen disabled
-            runner.setup_browser()
+            runner.driver = runner.browser_setup.setup_browser()
 
             # Verify fullscreen mode was NOT activated
             mock_driver.fullscreen_window.assert_not_called()

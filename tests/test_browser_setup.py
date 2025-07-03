@@ -15,7 +15,7 @@ from grafana_runner import GrafanaRunner  # noqa: E402
 class TestBrowserSetup:
     """Test cases for browser setup functionality."""
 
-    @patch("grafana_runner.webdriver.Chrome")
+    @patch("browser_setup.webdriver.Chrome")
     def test_setup_chrome_browser(self, mock_chrome):
         """Test Chrome browser setup."""
         config_data = {
@@ -45,7 +45,7 @@ class TestBrowserSetup:
             mock_driver = Mock()
             mock_chrome.return_value = mock_driver
 
-            runner.setup_browser()
+            runner.driver = runner.browser_setup.setup_browser()
 
             # Verify Chrome was called
             mock_chrome.assert_called_once()
@@ -59,7 +59,7 @@ class TestBrowserSetup:
         finally:
             os.unlink(config_path)
 
-    @patch("grafana_runner.webdriver.Chrome")
+    @patch("browser_setup.webdriver.Chrome")
     def test_setup_chrome_with_ssl_bypass(self, mock_chrome):
         """Test Chrome browser setup with SSL certificate bypass enabled."""
         config_data = {
@@ -91,7 +91,7 @@ class TestBrowserSetup:
             mock_chrome.return_value = mock_driver
 
             # We need to mock the ChromeOptions to inspect the arguments
-            with patch("grafana_runner.ChromeOptions") as mock_options_class:
+            with patch("browser_setup.ChromeOptions") as mock_options_class:
                 mock_options = Mock()
                 mock_options_class.return_value = mock_options
                 mock_options.arguments = []
@@ -102,7 +102,7 @@ class TestBrowserSetup:
 
                 mock_options.add_argument.side_effect = add_argument_side_effect
 
-                runner.setup_browser()
+                runner.driver = runner.browser_setup.setup_browser()
 
                 # Verify Chrome was called with options
                 mock_chrome.assert_called_once()
@@ -126,7 +126,7 @@ class TestBrowserSetup:
         finally:
             os.unlink(config_path)
 
-    @patch("grafana_runner.webdriver.Chrome")
+    @patch("browser_setup.webdriver.Chrome")
     def test_setup_chrome_without_ssl_bypass(self, mock_chrome):
         """Test Chrome browser setup with SSL certificate bypass disabled."""
         config_data = {
@@ -158,7 +158,7 @@ class TestBrowserSetup:
             mock_chrome.return_value = mock_driver
 
             # We need to mock the ChromeOptions to inspect the arguments
-            with patch("grafana_runner.ChromeOptions") as mock_options_class:
+            with patch("browser_setup.ChromeOptions") as mock_options_class:
                 mock_options = Mock()
                 mock_options_class.return_value = mock_options
                 mock_options.arguments = []
@@ -169,7 +169,7 @@ class TestBrowserSetup:
 
                 mock_options.add_argument.side_effect = add_argument_side_effect
 
-                runner.setup_browser()
+                runner.driver = runner.browser_setup.setup_browser()
 
                 # Verify Chrome was called
                 mock_chrome.assert_called_once()
@@ -192,7 +192,7 @@ class TestBrowserSetup:
         finally:
             os.unlink(config_path)
 
-    @patch("grafana_runner.webdriver.Chrome")
+    @patch("browser_setup.webdriver.Chrome")
     def test_ssl_bypass_default_behavior(self, mock_chrome):
         """Test that SSL bypass is enabled by default when ignore_ssl_errors is not specified."""
         config_data = {
@@ -221,7 +221,7 @@ class TestBrowserSetup:
             mock_chrome.return_value = mock_driver
 
             # We need to mock the ChromeOptions to inspect the arguments
-            with patch("grafana_runner.ChromeOptions") as mock_options_class:
+            with patch("browser_setup.ChromeOptions") as mock_options_class:
                 mock_options = Mock()
                 mock_options_class.return_value = mock_options
                 mock_options.arguments = []
@@ -232,7 +232,7 @@ class TestBrowserSetup:
 
                 mock_options.add_argument.side_effect = add_argument_side_effect
 
-                runner.setup_browser()
+                runner.driver = runner.browser_setup.setup_browser()
 
                 # Verify Chrome was called
                 mock_chrome.assert_called_once()
@@ -244,7 +244,7 @@ class TestBrowserSetup:
         finally:
             os.unlink(config_path)
 
-    @patch("grafana_runner.webdriver.Chrome")
+    @patch("browser_setup.webdriver.Chrome")
     def test_fullscreen_mode_setup(self, mock_chrome):
         """Test that kiosk mode arguments are properly set when fullscreen is enabled."""
         config_data = {
@@ -273,7 +273,7 @@ class TestBrowserSetup:
             mock_chrome.return_value = mock_driver
 
             # We need to mock the ChromeOptions to inspect the arguments
-            with patch("grafana_runner.ChromeOptions") as mock_options_class:
+            with patch("browser_setup.ChromeOptions") as mock_options_class:
                 mock_options = Mock()
                 mock_options_class.return_value = mock_options
                 mock_options.arguments = []
@@ -284,7 +284,7 @@ class TestBrowserSetup:
 
                 mock_options.add_argument.side_effect = add_argument_side_effect
 
-                runner.setup_browser()
+                runner.driver = runner.browser_setup.setup_browser()
 
                 # Verify Chrome was called
                 mock_chrome.assert_called_once()
@@ -307,7 +307,7 @@ class TestBrowserSetup:
         finally:
             os.unlink(config_path)
 
-    @patch("grafana_runner.webdriver.Chrome")
+    @patch("browser_setup.webdriver.Chrome")
     def test_fullscreen_mode_disabled(self, mock_chrome):
         """Test that kiosk mode arguments are not set when fullscreen is disabled."""
         config_data = {
@@ -336,7 +336,7 @@ class TestBrowserSetup:
             mock_chrome.return_value = mock_driver
 
             # We need to mock the ChromeOptions to inspect the arguments
-            with patch("grafana_runner.ChromeOptions") as mock_options_class:
+            with patch("browser_setup.ChromeOptions") as mock_options_class:
                 mock_options = Mock()
                 mock_options_class.return_value = mock_options
                 mock_options.arguments = []
@@ -347,7 +347,7 @@ class TestBrowserSetup:
 
                 mock_options.add_argument.side_effect = add_argument_side_effect
 
-                runner.setup_browser()
+                runner.driver = runner.browser_setup.setup_browser()
 
                 # Verify Chrome was called
                 mock_chrome.assert_called_once()

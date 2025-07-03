@@ -20,7 +20,7 @@ class TestConfigurationValidation:
 
         runner = GrafanaRunner()
         with pytest.raises(ValueError, match="Missing required config key: panels"):
-            runner.validate_config(config_data)
+            runner.config_manager.validate_config(config_data)
 
     def test_validate_config_missing_browser_settings(self):
         """Test validation with missing browser_settings key."""
@@ -38,7 +38,7 @@ class TestConfigurationValidation:
         with pytest.raises(
             ValueError, match="Missing required config key: browser_settings"
         ):
-            runner.validate_config(config_data)
+            runner.config_manager.validate_config(config_data)
 
     def test_validate_config_empty_panels(self):
         """Test validation with empty panels array."""
@@ -46,7 +46,7 @@ class TestConfigurationValidation:
 
         runner = GrafanaRunner()
         with pytest.raises(ValueError, match="No panels configured"):
-            runner.validate_config(config_data)
+            runner.config_manager.validate_config(config_data)
 
     def test_validate_config_panel_missing_url(self):
         """Test validation with panel missing URL."""
@@ -57,7 +57,7 @@ class TestConfigurationValidation:
 
         runner = GrafanaRunner()
         with pytest.raises(ValueError, match="Panel 0 missing URL"):
-            runner.validate_config(config_data)
+            runner.config_manager.validate_config(config_data)
 
     def test_validate_config_panel_missing_duration(self):
         """Test validation with panel missing duration."""
@@ -70,7 +70,7 @@ class TestConfigurationValidation:
 
         runner = GrafanaRunner()
         with pytest.raises(ValueError, match="Panel 0 missing duration"):
-            runner.validate_config(config_data)
+            runner.config_manager.validate_config(config_data)
 
     def test_validate_config_with_ssl_settings(self):
         """Test that configuration validation works with SSL settings."""
@@ -92,7 +92,7 @@ class TestConfigurationValidation:
 
         runner = GrafanaRunner()
         # Should not raise any exception
-        runner.validate_config(config_data)
+        runner.config_manager.validate_config(config_data)
 
         # Test that the config is properly loaded
         assert config_data["browser_settings"]["ignore_ssl_errors"] is True
