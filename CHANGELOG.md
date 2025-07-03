@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.5.0...v1.5.1) (2025-07-03)
+
+
+### 📚 Documentation
+
+* update README.md with enhanced features and configuration details ([04a3404](https://github.com/mateuszpolis/GrafanaRunner/commit/04a34046c6c632740d622ecf871822d4de3b2261))
+
 ## [1.5.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.4.5...v1.5.0) (2025-07-03)
 
 
