@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.4.2...v1.4.3) (2025-07-03)
+
+
+### 🐛 Bug Fixes
+
+* update Python executable path in Windows installer task creation ([e8c030f](https://github.com/mateuszpolis/GrafanaRunner/commit/e8c030fe3cf10e1c1a1a5663d2f6c684e10fbfa4))
+
 ## [1.4.2](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.4.1...v1.4.2) (2025-07-02)
 
 
