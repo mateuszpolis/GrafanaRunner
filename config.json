@@ -6,11 +6,6 @@
       "duration": 10
     },
     {
-      "name": "Facebook",
-      "url": "https://www.facebook.com",
-      "duration": 10
-    },
-    {
       "name": "Triggers",
       "url": "https://agrana.cern.ch/d/behs4t0raojr4b/triggers?orgId=1&from=now-3h&to=now&timezone=Europe%2FZurich&var-schema=FV0ARCH",
       "duration": 10
