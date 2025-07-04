@@ -1,3 +1,10 @@
+## [1.12.7](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.12.6...v1.12.7) (2025-07-04)
+
+
+### ♻️ Code Refactoring
+
+* update Chrome browser setup and installation script ([12f15ce](https://github.com/mateuszpolis/GrafanaRunner/commit/12f15ce97b07be09121747363866808c9e416176))
+
 ## [1.12.6](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.12.5...v1.12.6) (2025-07-04)
 
 
