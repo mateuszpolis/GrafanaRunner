@@ -1,3 +1,10 @@
+## [1.12.1](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.12.0...v1.12.1) (2025-07-04)
+
+
+### ♻️ Code Refactoring
+
+* update installation scripts for GrafanaRunner ([181abe7](https://github.com/mateuszpolis/GrafanaRunner/commit/181abe720ec670897c1c1b34c2e06d6cfb999ffb))
+
 ## [1.12.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.11.0...v1.12.0) (2025-07-04)
 
 
