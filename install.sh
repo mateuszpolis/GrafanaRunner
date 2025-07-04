@@ -53,8 +53,9 @@ cat > "$PLIST_FILE" << EOF
     <string>com.grafanarunner</string>
     <key>ProgramArguments</key>
     <array>
-        <string>python3</string>
-        <string>$CURRENT_DIR/grafana_runner.py</string>
+        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>cd "$CURRENT_DIR" && echo "\$(date): Starting GrafanaRunner..." >> "$CURRENT_DIR/runner.log" 2>&1 && git pull >> "$CURRENT_DIR/runner.log" 2>&1 && echo "\$(date): Git pull completed, starting application..." >> "$CURRENT_DIR/runner.log" 2>&1 && python3 grafana_runner.py >> "$CURRENT_DIR/runner.log" 2>&1</string>
     </array>
     <key>WorkingDirectory</key>
     <string>$CURRENT_DIR</string>
@@ -63,9 +64,9 @@ cat > "$PLIST_FILE" << EOF
     <key>KeepAlive</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>$CURRENT_DIR/grafana_runner.log</string>
+    <string>$CURRENT_DIR/runner.log</string>
     <key>StandardErrorPath</key>
-    <string>$CURRENT_DIR/grafana_runner_error.log</string>
+    <string>$CURRENT_DIR/runner.log</string>
 </dict>
 </plist>
 EOF
