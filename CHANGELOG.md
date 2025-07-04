@@ -1,3 +1,10 @@
+## [1.12.3](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.12.2...v1.12.3) (2025-07-04)
+
+
+### ♻️ Code Refactoring
+
+* remove outdated panel configuration for Facebook in config.json ([58b349e](https://github.com/mateuszpolis/GrafanaRunner/commit/58b349ef6c110bb9b9ba86f0dc9bb2dd14b9d555))
+
 ## [1.12.2](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.12.1...v1.12.2) (2025-07-04)
 
 
