@@ -81,7 +81,9 @@ schtasks /create ^
     /tn "GrafanaRunner" ^
     /tr "\"%CURRENT_DIR%\startup.bat\"" ^
     /sc onlogon ^
-    /rl LIMITED ^
+    /rl HIGHEST ^
+    /ru "%USERNAME%" ^
+    /delay 0001:00 ^
     /f
 
 if errorlevel 1 (
@@ -89,10 +91,12 @@ if errorlevel 1 (
     echo You can manually add it in Task Scheduler:
     echo   • Trigger: At log on
     echo   • Action: Start a program
-    echo     Program/script: %PYTHON_EXE%
-    echo     Arguments: "%CURRENT_DIR%\grafana_runner.py"
+    echo     Program/script: "%CURRENT_DIR%\startup.bat"
+    echo   • Run with highest privileges: Yes
+    echo   • Run only when user is logged on: Yes
 ) else (
     echo Created Windows startup task: GrafanaRunner
+    echo Task will run 1 minute after logon with highest privileges
 )
 
 echo.
@@ -101,8 +105,10 @@ echo.
 echo Next Steps:
 echo   1. Edit config.json with your Grafana panel URLs
 echo   2. Test the runner: python grafana_runner.py   Or: run.bat
-echo   3. The startup task will run on your next logon
-echo   4. To disable: schtasks /delete /tn "GrafanaRunner" /f
-echo   5. To re-enable: schtasks /change /tn "GrafanaRunner" /enable
+echo   3. Test the startup script: startup.bat
+echo   4. The startup task will run 1 minute after your next logon
+echo   5. Check runner.log for startup and error messages
+echo   6. To disable: schtasks /delete /tn "GrafanaRunner" /f
+echo   7. To re-enable: schtasks /change /tn "GrafanaRunner" /enable
 echo.
 pause
