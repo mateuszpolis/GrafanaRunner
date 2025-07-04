@@ -1,3 +1,10 @@
+## [1.12.6](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.12.5...v1.12.6) (2025-07-04)
+
+
+### ♻️ Code Refactoring
+
+* enhance Chrome browser setup in kiosk mode ([c715cbf](https://github.com/mateuszpolis/GrafanaRunner/commit/c715cbf9f0f1a952a20c03223b4a03583a4b3666))
+
 ## [1.12.5](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.12.4...v1.12.5) (2025-07-04)
 
 
