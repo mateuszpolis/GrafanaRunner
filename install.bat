@@ -79,7 +79,7 @@ echo Using Python interpreter at: %PYTHON_EXE%
 echo Creating Windows startup task…
 schtasks /create ^
     /tn "GrafanaRunner" ^
-    /tr "\"%SystemRoot%\System32\cmd.exe\" /c cd /d \"%CURRENT_DIR%\" && echo [%%date%% %%time%%] Starting GrafanaRunner... >> \"%CURRENT_DIR%\runner.log\" 2>&1 && git pull >> \"%CURRENT_DIR%\runner.log\" 2>&1 && echo [%%date%% %%time%%] Git pull completed, starting application... >> \"%CURRENT_DIR%\runner.log\" 2>&1 && \"%PYTHON_EXE%\" grafana_runner.py >> \"%CURRENT_DIR%\runner.log\" 2>&1" ^
+    /tr "\"%CURRENT_DIR%\startup.bat\"" ^
     /sc onlogon ^
     /rl LIMITED ^
     /f
