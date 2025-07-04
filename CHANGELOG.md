@@ -1,3 +1,10 @@
+## [1.12.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.11.0...v1.12.0) (2025-07-04)
+
+
+### ✨ Features
+
+* update panel configurations in config.json ([7633303](https://github.com/mateuszpolis/GrafanaRunner/commit/7633303082a06aa7e0c18dce2fc7fdc5c95a4a75))
+
 ## [1.11.0](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.10.0...v1.11.0) (2025-07-03)
 
 
