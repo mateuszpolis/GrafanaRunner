@@ -6,17 +6,17 @@
       "duration": 10
     },
     {
-      "name": "Triggers",
-      "url": "https://agrana.cern.ch/d/behs4t0raojr4b/triggers?orgId=1&from=now-3h&to=now&timezone=Europe%2FZurich&var-schema=FV0ARCH",
-      "duration": 10
-    },
-    {
       "name": "Time Align",
       "url": "https://agrana.cern.ch/d/ceqwhgehmovlsa/pmxx-chxx-parameter-dashboards-new?var-param=param",
       "duration": 20,
       "variables": {
         "param": ["TRG_RATE", "CFD_RATE"]
       }
+    },
+    {
+      "name": "Triggers",
+      "url": "https://agrana.cern.ch/d/behs4t0raojr4b/triggers?orgId=1&from=now-3h&to=now&timezone=Europe%2FZurich&var-schema=FV0ARCH",
+      "duration": 10
     },
     {
       "name": "Common UI",
