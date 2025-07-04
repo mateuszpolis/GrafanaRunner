@@ -54,6 +54,16 @@ class BrowserSetup:
         """Setup Chrome browser with kiosk mode options."""
         options = ChromeOptions()
 
+        # Use a unique user data directory to avoid conflicts with other Chrome instances
+        import os
+        import tempfile
+
+        user_data_dir = os.path.join(
+            tempfile.gettempdir(), f"grafana_runner_chrome_{os.getpid()}"
+        )
+        options.add_argument(f"--user-data-dir={user_data_dir}")
+        self.logger.info(f"Using Chrome user data directory: {user_data_dir}")
+
         # True kiosk: strip out browser chrome, then OS fullscreen
         fullscreen = self.config["browser_settings"].get("fullscreen", True)
         if fullscreen:
