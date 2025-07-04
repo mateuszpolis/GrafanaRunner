@@ -1,3 +1,10 @@
+## [1.12.4](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.12.3...v1.12.4) (2025-07-04)
+
+
+### ♻️ Code Refactoring
+
+* restore "Triggers" panel configuration in config.json ([73af059](https://github.com/mateuszpolis/GrafanaRunner/commit/73af059119bab0af448c6257b52786124f584d23))
+
 ## [1.12.3](https://github.com/mateuszpolis/GrafanaRunner/compare/v1.12.2...v1.12.3) (2025-07-04)
 
 
